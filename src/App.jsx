@@ -2,8 +2,9 @@ import styled from "styled-components";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Rota from "./pages/Inicial/Rota";
 import Cadastro from "./pages/Inicial/Cadastro";
-import Habitos from "./pages/Abitos/Habitos";
-import SuccessPage from "./pages/SuccessPage/SuccessPage";
+import Habitos from "./pages/Habitos/Habitos";
+import Hoje from "./pages/Hoje/Hoje";
+
 
 
 export default function App() {
@@ -15,7 +16,7 @@ export default function App() {
                 <Route path='/' element={<Rota/>}  />
                 <Route path='/cadastro' element={<Cadastro  />} />
                 <Route path='/habitos' element={<Habitos />} />
-                <Route path='/sucesso' element={<SuccessPage />} />
+                <Route path='/hoje' element={<Hoje />} />
 
 
             </Routes>

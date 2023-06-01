@@ -1,14 +1,17 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components"
 import MinhaImagem from '../../assets/Group 8.png';
 import axios from "axios";
+import { ThreeDots } from "react-loader-spinner";
 
 export default function Rota() {
 
     const [email, setemail] = useState('');
     const [senha, setsenha] = useState('');
-  //  const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
 
     function mandarProServidor(e) {
         e.preventDefault();
@@ -18,8 +21,15 @@ export default function Rota() {
         }
         const urlDados = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login';
         const promise = axios.post(urlDados, dados);
-        promise.then(resposta => (alert('deu certo')));
-        promise.catch(respota => (alert('deu errado')));
+        setLoading(true);
+        promise.then(resposta => navigate("/habitos", {
+            
+        }));
+        promise.catch(respota => {
+            setLoading(false);
+                alert(erro.response.data.message);
+         
+        });
 
     }
 
@@ -43,7 +53,14 @@ export default function Rota() {
                     onChange={(e) => setsenha(e.target.value)}
                     placeholder="senha"
                 />
-                <Entrar>Entrar</Entrar>
+                <Entrar disabled={loading} >
+
+                    {loading ? (
+                        <ThreeDots type="Oval" color="#FFFFFF" height={20} width={40} />
+                    ) : (
+                        'Entrar'
+                    )}
+                </Entrar>
             </Form>
             {/* preciso configurar o botão de cadastrar*/}
             <Cadastrar to={'/cadastro'}>Não tem uma conta? Cadastre-se!</Cadastrar>

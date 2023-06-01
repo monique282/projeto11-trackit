@@ -34,7 +34,7 @@ export default function Rota() {
         promise.catch(respota => {
             setLoading(false);
             setTimeout(() => {
-                alert('deu errado');
+                alert(erro.response.data.message);
             }, 5000);
          
         });
