@@ -3,8 +3,13 @@ import { useState } from "react";
 import styled from "styled-components"
 import MinhaImagem from '../../assets/14.png';
 import Ho from '../../assets/Ellipse 2.png';
+import axios from "axios";
+import { Link } from "react-router-dom";
 
-export default function Habitos() {
+export default function Habitos(props) {
+
+    const { token } = props;
+    console.log(token);
     const [clicado, setclicado] = useState('');
     const [habito, sethabito] = useState('');
     const [diasClicados, setDiasClicados] = useState({
@@ -16,11 +21,29 @@ export default function Habitos() {
         S: false,
         S: false,
     });
-    
 
-    function Criar() {
-        alert('deu certo');
+
+    function Criar(e) {
+        e.preventDefault();
+        const dados = {
+            name: habito,
+            days: [1]
+        };
+        // criar abito
+        const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits'
+        const confi = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+        const promise = axios.post(URL, dados, confi);
+
+        promise.then(resposta => console.log(resposta));
+        promise.catch(resposta => alert('deu errado'));
     }
+
+
+
     function colorir(dia) {
         setDiasClicados((prevDiasClicados) => ({
             ...prevDiasClicados,
@@ -51,59 +74,60 @@ export default function Habitos() {
                             onChange={(e) => sethabito(e.target.value)}
                             placeholder="nome do Habito"
                         />
+                        <Semana>
+                            <Dias
+                                style={{
+                                    backgroundColor: diasClicados["D"] ? "#CFCFCF" : "#FFFFFF",
+                                    color: diasClicados["D"] ? "#FFFFFF" : "#DBDBDB",
+                                }}
+                                onClick={() => colorir("D")}> D</Dias>
+                            <Dias
+                                style={{
+                                    backgroundColor: diasClicados["Seg"] ? "#CFCFCF" : "#FFFFFF",
+                                    color: diasClicados["Seg"] ? "#FFFFFF" : "#DBDBDB",
+                                }}
+                                onClick={() => colorir("Seg")}> S</Dias>
+                            <Dias
+                                style={{
+                                    backgroundColor: diasClicados["T"] ? "#CFCFCF" : "#FFFFFF",
+                                    color: diasClicados["T"] ? "#FFFFFF" : "#DBDBDB",
+                                }}
+                                onClick={() => colorir("T")}> T</Dias>
+                            <Dias
+                                style={{
+                                    backgroundColor: diasClicados["Qa"] ? "#CFCFCF" : "#FFFFFF",
+                                    color: diasClicados["Qa"] ? "#FFFFFF" : "#DBDBDB",
+                                }}
+                                onClick={() => colorir("Qa")}> Q</Dias>
+                            <Dias
+                                style={{
+                                    backgroundColor: diasClicados["Qi"] ? "#CFCFCF" : "#FFFFFF",
+                                    color: diasClicados["Qi"] ? "#FFFFFF" : "#DBDBDB",
+                                }}
+                                onClick={() => colorir("Qi")}> Q</Dias>
+                            <Dias
+                                style={{
+                                    backgroundColor: diasClicados["Sex"] ? "#CFCFCF" : "#FFFFFF",
+                                    color: diasClicados["Sex"] ? "#FFFFFF" : "#DBDBDB",
+                                }}
+                                onClick={() => colorir("Sex")}> S</Dias>
+                            <Dias
+                                style={{
+                                    backgroundColor: diasClicados["Sab"] ? "#CFCFCF" : "#FFFFFF",
+                                    color: diasClicados["Sab"] ? "#FFFFFF" : "#DBDBDB",
+                                }}
+                                onClick={() => colorir("Sab")}> S</Dias>
+                        </Semana>
+                        <Finalizar>
+                            <Cancelar>
+                                Cancelar
+                            </Cancelar>
+                            <Salvar>
+                                Salvar
+                            </Salvar>
+                        </Finalizar>
                     </Form>
-                    <Semana>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["D"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["D"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                            onClick={() => colorir("D")}> D</Dias>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["Seg"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["Seg"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                            onClick={() => colorir("Seg")}> S</Dias>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["T"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["T"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                            onClick={() => colorir("T")}> T</Dias>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["Qa"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["Qa"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                            onClick={() => colorir("Qa")}> Q</Dias>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["Qi"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["Qi"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                            onClick={() => colorir("Qi")}> Q</Dias>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["Sex"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["Sex"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                            onClick={() => colorir("Sex")}> S</Dias>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["Sab"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["Sab"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                            onClick={() => colorir("Sab")}> S</Dias>
-                    </Semana>
-                    <Finalizar>
-                        <Cancelar>
-                            Cancelar
-                        </Cancelar>
-                        <Salvar>
-                            Salvar
-                        </Salvar>
-                    </Finalizar>
+
                 </Preencher>
             )}
             <HabitosCadastrados>
@@ -111,9 +135,9 @@ export default function Habitos() {
             </HabitosCadastrados>
 
             <Rodape>
-                <Hab> Habitos </Hab>
+                <Hab to={'/habitos'}> Habitos </Hab>
                 <Hoje src={Ho} />
-                <Hab> Histórico </Hab>
+                <Hab to={'/hoje'}> Histórico </Hab>
             </Rodape>
         </Total>
     )
@@ -216,7 +240,7 @@ const Rodape = styled.div`
     justify-content: space-around;
     align-items: center;
 `
-const Hab = styled.div`
+const Hab = styled(Link)`
     width: 68px;
     height: 22px;
     font-family: 'Lexend Deca';
@@ -226,6 +250,7 @@ const Hab = styled.div`
     line-height: 22px;
     text-align: center;
     color: #52B6FF;
+    text-decoration: none;
 `
 const Hoje = styled.img`
     width: 91px;
@@ -317,7 +342,7 @@ const Cancelar = styled.div`
     align-items: center;
 
 `
-const Salvar = styled.div`
+const Salvar = styled.button`
     width: 84px;
     height: 35px;
     background: #52B6FF;
@@ -333,4 +358,5 @@ const Salvar = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    border: none;
 `

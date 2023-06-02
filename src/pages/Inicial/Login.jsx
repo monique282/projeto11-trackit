@@ -5,8 +5,9 @@ import MinhaImagem from '../../assets/Group 8.png';
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
 
-export default function Rota() {
+export default function Login(props) {
 
+    const { settoken } = props;
     const [email, setemail] = useState('');
     const [senha, setsenha] = useState('');
     const [loading, setLoading] = useState(false);
@@ -22,13 +23,18 @@ export default function Rota() {
         const urlDados = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login';
         const promise = axios.post(urlDados, dados);
         setLoading(true);
-        promise.then(resposta => navigate("/habitos", {
-            
-        }));
+
+        promise.then(resposta => {
+            console.log(resposta.data.token);
+            settoken(resposta.data.token);
+            navigate("/hoje");
+        });
+
+
         promise.catch(respota => {
             setLoading(false);
-                alert(erro.response.data.message);
-         
+            alert('deu essado');
+
         });
 
     }

@@ -4,9 +4,25 @@ import MinhaImagem from '../../assets/14.png';
 import { IonIcon } from '@ionic/react';
 import { checkmarkOutline } from 'ionicons/icons';
 import Ho from '../../assets/Ellipse 2.png';
+import axios from "axios";
+import { Link } from "react-router-dom";
 
 
-export default function SuccessPage() {
+export default function SuccessPage(props) {
+
+    const {token} = props;
+    const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today'
+    const conf = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const promise = axios.get(URL, conf);
+
+    promise.then(resposta => console.log(resposta) );
+    promise.catch(resposta => alert('deu errado hoje'));
+
+
 
     return (
         <Total>
@@ -31,26 +47,26 @@ export default function SuccessPage() {
                                 Sequência atual: 3 dias<br></br>
                                 Seu recorde: 5 dias
                             </Sequencia>
-                            
+
                         </Esquerdo>
                         <Direito>
                             <Quadrado>
-                            <IonIcon icon={checkmarkOutline} className="icon" />
+                                <IonIcon icon={checkmarkOutline} className="icon" />
                             </Quadrado>
                         </Direito>
                     </Hab>
                 </ListaHabitos>
                 <Rodape>
-                <Habi> Habitos </Habi>
-                <Hoje src={Ho} />
-                <Habi> Histórico </Habi>
-            </Rodape>
+                    <Habi to={'/habitos'}> Habitos </Habi>
+                    <Hoje src={Ho} />
+                    <Habi to={'/hoje'}> Histórico </Habi>
+                </Rodape>
             </Topo>
 
         </Total>
     )
-}
 
+}
 const Total = styled.div`
 
     width: 100%;
@@ -83,6 +99,7 @@ const Slogan = styled.div`
     font-size: 39px;
     line-height: 49px;
     color: #FFFFFF;
+    
 
 `
 
@@ -208,7 +225,7 @@ const Rodape = styled.div`
     justify-content: space-around;
     align-items: center;
 `
-const Habi = styled.div`
+const Habi = styled(Link)`
     width: 68px;
     height: 22px;
     font-family: 'Lexend Deca';
@@ -218,6 +235,7 @@ const Habi = styled.div`
     line-height: 22px;
     text-align: center;
     color: #52B6FF;
+    text-decoration: none;
 `
 const Hoje = styled.img`
     width: 91px;
