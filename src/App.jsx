@@ -3,8 +3,10 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/Inicial/Login";
 import Cadastro from "./pages/Inicial/Cadastro";
 import Habitos from "./pages/Habitos/Habitos";
+import HabitosCompletos from "./pages/Habitos/HabitosCompletos";
 import Hoje from "./pages/Hoje/Hoje";
 import { useState } from "react";
+
 
 
 
@@ -18,6 +20,7 @@ export default function App() {
                 <Route path='/' element={<Login settoken={settoken}/> }  />
                 <Route path='/cadastro' element={<Cadastro  />} />
                 <Route path='/habitos' element={<Habitos token={token} />} />
+                <Route path='/habitosC' element={<HabitosCompletos token={token} />} />
                 <Route path='/hoje' element={<Hoje token={token} />} />
 
 

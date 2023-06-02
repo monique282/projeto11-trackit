@@ -4,7 +4,10 @@ import styled from "styled-components"
 import MinhaImagem from '../../assets/14.png';
 import Ho from '../../assets/Ellipse 2.png';
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { IonIcon } from '@ionic/react';
+import { trashOutline } from 'ionicons/icons';
 
 export default function Habitos(props) {
 
@@ -12,6 +15,8 @@ export default function Habitos(props) {
     console.log(token);
     const [clicado, setclicado] = useState('');
     const [habito, sethabito] = useState('');
+    const navigate = useNavigate();
+    const [qual, setqual] = useState('')
     const [diasClicados, setDiasClicados] = useState({
         D: false,
         S: false,
@@ -22,14 +27,42 @@ export default function Habitos(props) {
         S: false,
     });
 
+    // presiso chamar a lista antes de tudo
+    useEffect(() => {
+        // vizualizar abito
+        const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits'
+        const confi = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+        const promise = axios.get(URL, confi);
+        // verificar se a data esta fazia
+        promise.then(resposta => {
+            if (resposta.data.length === 0) {
+                console.log('nada');
+            } else {
+                console.log('tem');
+                setqual('1')
+            }
+            console.log(resposta);
+        });
+
+        // promise.catch(resposta => alert('deu errado salvar'));
+    }, [Inicio]);
+
+    function Inicio() {
+
+    }
 
     function Criar(e) {
         e.preventDefault();
         const dados = {
             name: habito,
-            days: [1]
+            days: [1, 2, 3, 4, 5, 6, 7]
         };
         // criar abito
+        setclicado('');
         const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits'
         const confi = {
             headers: {
@@ -38,11 +71,9 @@ export default function Habitos(props) {
         };
         const promise = axios.post(URL, dados, confi);
 
-        promise.then(resposta => console.log(resposta));
+        promise.then(resposta => Inicio());
         promise.catch(resposta => alert('deu errado'));
     }
-
-
 
     function colorir(dia) {
         setDiasClicados((prevDiasClicados) => ({
@@ -60,80 +91,140 @@ export default function Habitos(props) {
 
             <Topo>
                 <Meus> Meus hábitos </Meus>
-                <Mais onClick={() => setclicado('ver')}>+</Mais>
+                <Mais onClick={() => { setclicado('ver'), setqual('') }}>+</Mais>
             </Topo>
 
-            {clicado === 'ver' && (
-                <Preencher>
-                    <Form onSubmit={Criar}>
-                        <Email
-                            type="text"
-                            id="habito"
-                            required
-                            value={habito}
-                            onChange={(e) => sethabito(e.target.value)}
-                            placeholder="nome do Habito"
-                        />
-                        <Semana>
-                            <Dias
-                                style={{
-                                    backgroundColor: diasClicados["D"] ? "#CFCFCF" : "#FFFFFF",
-                                    color: diasClicados["D"] ? "#FFFFFF" : "#DBDBDB",
-                                }}
-                                onClick={() => colorir("D")}> D</Dias>
-                            <Dias
-                                style={{
-                                    backgroundColor: diasClicados["Seg"] ? "#CFCFCF" : "#FFFFFF",
-                                    color: diasClicados["Seg"] ? "#FFFFFF" : "#DBDBDB",
-                                }}
-                                onClick={() => colorir("Seg")}> S</Dias>
-                            <Dias
-                                style={{
-                                    backgroundColor: diasClicados["T"] ? "#CFCFCF" : "#FFFFFF",
-                                    color: diasClicados["T"] ? "#FFFFFF" : "#DBDBDB",
-                                }}
-                                onClick={() => colorir("T")}> T</Dias>
-                            <Dias
-                                style={{
-                                    backgroundColor: diasClicados["Qa"] ? "#CFCFCF" : "#FFFFFF",
-                                    color: diasClicados["Qa"] ? "#FFFFFF" : "#DBDBDB",
-                                }}
-                                onClick={() => colorir("Qa")}> Q</Dias>
-                            <Dias
-                                style={{
-                                    backgroundColor: diasClicados["Qi"] ? "#CFCFCF" : "#FFFFFF",
-                                    color: diasClicados["Qi"] ? "#FFFFFF" : "#DBDBDB",
-                                }}
-                                onClick={() => colorir("Qi")}> Q</Dias>
-                            <Dias
-                                style={{
-                                    backgroundColor: diasClicados["Sex"] ? "#CFCFCF" : "#FFFFFF",
-                                    color: diasClicados["Sex"] ? "#FFFFFF" : "#DBDBDB",
-                                }}
-                                onClick={() => colorir("Sex")}> S</Dias>
-                            <Dias
-                                style={{
-                                    backgroundColor: diasClicados["Sab"] ? "#CFCFCF" : "#FFFFFF",
-                                    color: diasClicados["Sab"] ? "#FFFFFF" : "#DBDBDB",
-                                }}
-                                onClick={() => colorir("Sab")}> S</Dias>
-                        </Semana>
-                        <Finalizar>
-                            <Cancelar>
-                                Cancelar
-                            </Cancelar>
-                            <Salvar>
-                                Salvar
-                            </Salvar>
-                        </Finalizar>
-                    </Form>
+            {qual === '' && clicado === '' && (
+                <HabitosCadastrados>
+                    Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!
+                </HabitosCadastrados>)}
 
-                </Preencher>
+            {qual === '' && clicado === 'ver' && (
+                <>
+                    <Preencher>
+                        <Form onSubmit={Criar}>
+                            <Email
+                                type="text"
+                                id="habito"
+                                required
+                                value={habito}
+                                onChange={(e) => sethabito(e.target.value)}
+                                placeholder="nome do Habito"
+                            />
+                            <Semana>
+                                <Dias
+                                    style={{
+                                        backgroundColor: diasClicados["D"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasClicados["D"] ? "#FFFFFF" : "#DBDBDB",
+                                    }}
+                                    onClick={() => colorir("D")}> D</Dias>
+                                <Dias
+                                    style={{
+                                        backgroundColor: diasClicados["Seg"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasClicados["Seg"] ? "#FFFFFF" : "#DBDBDB",
+                                    }}
+                                    onClick={() => colorir("Seg")}> S</Dias>
+                                <Dias
+                                    style={{
+                                        backgroundColor: diasClicados["T"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasClicados["T"] ? "#FFFFFF" : "#DBDBDB",
+                                    }}
+                                    onClick={() => colorir("T")}> T</Dias>
+                                <Dias
+                                    style={{
+                                        backgroundColor: diasClicados["Qa"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasClicados["Qa"] ? "#FFFFFF" : "#DBDBDB",
+                                    }}
+                                    onClick={() => colorir("Qa")}> Q</Dias>
+                                <Dias
+                                    style={{
+                                        backgroundColor: diasClicados["Qi"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasClicados["Qi"] ? "#FFFFFF" : "#DBDBDB",
+                                    }}
+                                    onClick={() => colorir("Qi")}> Q</Dias>
+                                <Dias
+                                    style={{
+                                        backgroundColor: diasClicados["Sex"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasClicados["Sex"] ? "#FFFFFF" : "#DBDBDB",
+                                    }}
+                                    onClick={() => colorir("Sex")}> S</Dias>
+                                <Dias
+                                    style={{
+                                        backgroundColor: diasClicados["Sab"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasClicados["Sab"] ? "#FFFFFF" : "#DBDBDB",
+                                    }}
+                                    onClick={() => colorir("Sab")}> S</Dias>
+                            </Semana>
+                            <Finalizar>
+                                <Cancelar>
+                                    Cancelar
+                                </Cancelar>
+                                <Salvar  >
+                                    Salvar
+                                </Salvar>
+                            </Finalizar>
+                        </Form>
+
+                    </Preencher>
+                    <HabitosCadastrados>
+                        Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!
+                    </HabitosCadastrados>
+                </>
             )}
-            <HabitosCadastrados>
-                Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!
-            </HabitosCadastrados>
 
+            {qual === '1' && (
+                <Preenche>
+                    <Titulo>
+                        So pra condifurar
+                        <IonIcon icon={trashOutline} className="icon" />
+                    </Titulo>
+                    <Semana>
+                        <Dias
+                            style={{
+                                backgroundColor: diasClicados["D"] ? "#CFCFCF" : "#FFFFFF",
+                                color: diasClicados["D"] ? "#FFFFFF" : "#DBDBDB",
+                            }}
+                        > D</Dias>
+                        <Dias
+                            style={{
+                                backgroundColor: diasClicados["Seg"] ? "#CFCFCF" : "#FFFFFF",
+                                color: diasClicados["Seg"] ? "#FFFFFF" : "#DBDBDB",
+                            }}
+                        > S</Dias>
+                        <Dias
+                            style={{
+                                backgroundColor: diasClicados["T"] ? "#CFCFCF" : "#FFFFFF",
+                                color: diasClicados["T"] ? "#FFFFFF" : "#DBDBDB",
+                            }}
+                        > T</Dias>
+                        <Dias
+                            style={{
+                                backgroundColor: diasClicados["Qa"] ? "#CFCFCF" : "#FFFFFF",
+                                color: diasClicados["Qa"] ? "#FFFFFF" : "#DBDBDB",
+                            }}
+                        > Q</Dias>
+                        <Dias
+                            style={{
+                                backgroundColor: diasClicados["Qi"] ? "#CFCFCF" : "#FFFFFF",
+                                color: diasClicados["Qi"] ? "#FFFFFF" : "#DBDBDB",
+                            }}
+                        > Q</Dias>
+                        <Dias
+                            style={{
+                                backgroundColor: diasClicados["Sex"] ? "#CFCFCF" : "#FFFFFF",
+                                color: diasClicados["Sex"] ? "#FFFFFF" : "#DBDBDB",
+                            }}
+                        > S</Dias>
+                        <Dias
+                            style={{
+                                backgroundColor: diasClicados["Sab"] ? "#CFCFCF" : "#FFFFFF",
+                                color: diasClicados["Sab"] ? "#FFFFFF" : "#DBDBDB",
+                            }}
+                        > S</Dias>
+                    </Semana>
+
+                </Preenche>
+            )}
             <Rodape>
                 <Hab to={'/habitos'}> Habitos </Hab>
                 <Hoje src={Ho} />
@@ -154,6 +245,23 @@ const Total = styled.div`
  //   background-color: #E5E5E5;
     
 `
+const Titulo = styled.div`
+    width: 310px;
+    height: 25px;
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 25px;
+    color: #666666;
+    margin-top: 13px;
+    padding-left: 17px;
+    display: flex;
+    justify-content: space-between;
+   // background-color: #e81818;
+    
+`
+
 const Cabecalho = styled.div`
     position: absolute;
     width: 100%;
@@ -266,6 +374,14 @@ const Preencher = styled.div`
     background: #FFFFFF;
     border-radius: 5px;
 `
+const Preenche = styled.div`
+    width: 340px;
+    height: 91px;
+    background: #FFFFFF;
+    border-radius: 5px;
+    margin-bottom: 50px;
+`
+
 const Form = styled.form`
     display: flex;
     justify-content: center;

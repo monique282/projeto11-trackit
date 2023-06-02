@@ -6,21 +6,28 @@ import { checkmarkOutline } from 'ionicons/icons';
 import Ho from '../../assets/Ellipse 2.png';
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 
 
 export default function SuccessPage(props) {
 
-    const {token} = props;
-    const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today'
-    const conf = {
-        headers: {
-            Authorization: `Bearer ${token}`
+    useEffect(() => {
+        const { token } = props;
+        console.log(token);
+        const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today'
+        const conf = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
         }
-    }
-    const promise = axios.get(URL, conf);
+        const promise = axios.get(URL, conf);
 
-    promise.then(resposta => console.log(resposta) );
-    promise.catch(resposta => alert('deu errado hoje'));
+        promise.then(resposta => console.log(resposta));
+        promise.catch(resposta => alert('deu errado hoje'));
+
+
+    }, []);
+
 
 
 
@@ -59,7 +66,7 @@ export default function SuccessPage(props) {
                 <Rodape>
                     <Habi to={'/habitos'}> Habitos </Habi>
                     <Hoje src={Ho} />
-                    <Habi to={'/hoje'}> Histórico </Habi>
+                    <Habi to={'/habitosC'}> Histórico </Habi>
                 </Rodape>
             </Topo>
 
@@ -215,7 +222,7 @@ const Imagem = styled.img`
     
 `
 const Rodape = styled.div`
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 70px;
     left: 0px;
