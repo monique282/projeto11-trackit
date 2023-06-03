@@ -4,7 +4,7 @@ import styled from "styled-components"
 import MinhaImagem from '../../assets/14.png';
 import Ho from '../../assets/Ellipse 2.png';
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { IonIcon } from '@ionic/react';
 import { trashOutline } from 'ionicons/icons';
@@ -12,20 +12,29 @@ import { trashOutline } from 'ionicons/icons';
 export default function Habitos(props) {
 
     const { token } = props;
-    console.log(token);
     const [clicado, setclicado] = useState('');
     const [habito, sethabito] = useState('');
-    const navigate = useNavigate();
-    const [qual, setqual] = useState('')
-    const [diasClicados, setDiasClicados] = useState({
+    const [qual, setqual] = useState('');
+    const [lista, setlista] = useState([]);
+    const [salvarclicked, setsalvarclicked] = useState(false);
+    const [diasclicados, setdiasclicados] = useState({
         D: false,
-        S: false,
+        Seg: false,
         T: false,
-        Q: false,
-        Q: false,
-        S: false,
-        S: false,
+        Qa: false,
+        Qi: false,
+        Sex: false,
+        Sab: false,
     });
+    const diasmap = {
+        D: 1,
+        Seg: 2,
+        T: 3,
+        Qa: 4,
+        Qi: 5,
+        Sex: 6,
+        Sab: 7,
+    };
 
     // presiso chamar a lista antes de tudo
     useEffect(() => {
@@ -41,25 +50,40 @@ export default function Habitos(props) {
         promise.then(resposta => {
             if (resposta.data.length === 0) {
                 console.log('nada');
+                setqual('')
             } else {
-                console.log('tem');
+                // console.log(lista);
+                console.log(resposta.data);
+                //  console.log(resposta.data.days);
+                setlista(resposta.data)
+                // console.log(lista.days)
                 setqual('1')
             }
-            console.log(resposta);
         });
-
+        setsalvarclicked(false);
+        setdiasclicados({
+            D: false,
+            Seg: false,
+            T: false,
+            Qa: false,
+            Qi: false,
+            Sex: false,
+            Sab: false,
+        })
         // promise.catch(resposta => alert('deu errado salvar'));
-    }, [Inicio]);
+    }, [salvarclicked]);
 
-    function Inicio() {
-
-    }
+    
 
     function Criar(e) {
         e.preventDefault();
+        const diasselecionados = Object.keys(diasclicados).filter((dia) => diasclicados[dia]);
+        const diasnumeros = diasselecionados.map((dia) => diasmap[dia]);
+        console.log(diasselecionados);
+        console.log(diasnumeros);
         const dados = {
             name: habito,
-            days: [1, 2, 3, 4, 5, 6, 7]
+            days: diasnumeros
         };
         // criar abito
         setclicado('');
@@ -70,17 +94,37 @@ export default function Habitos(props) {
             }
         };
         const promise = axios.post(URL, dados, confi);
-
-        promise.then(resposta => Inicio());
+        promise.then(resposta => console.log(resposta));
         promise.catch(resposta => alert('deu errado'));
     }
 
     function colorir(dia) {
-        setDiasClicados((prevDiasClicados) => ({
-            ...prevDiasClicados,
-            [dia]: !prevDiasClicados[dia],
+        setdiasclicados((prevdiasclicados) => ({
+            ...prevdiasclicados,
+            [dia]: !prevdiasclicados[dia],
         }));
-    }
+    };
+
+    function Deletar (id) {
+        
+        console.log(id);
+        const url = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`;
+        const confi = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        };
+        const promise = axios.delete(url, confi);
+          promise.then(resposta => {
+            setsalvarclicked(true);
+
+            console.log('Requisição DELETE enviada com sucesso!');
+            console.log('Status:', resposta.status);
+          })
+          promise.catch(error => {
+            console.error('Ocorreu um erro ao enviar a requisição DELETE:', error);
+          });
+      };
 
     return (
         <Total>
@@ -114,44 +158,44 @@ export default function Habitos(props) {
                             <Semana>
                                 <Dias
                                     style={{
-                                        backgroundColor: diasClicados["D"] ? "#CFCFCF" : "#FFFFFF",
-                                        color: diasClicados["D"] ? "#FFFFFF" : "#DBDBDB",
+                                        backgroundColor: diasclicados["D"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasclicados["D"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
                                     onClick={() => colorir("D")}> D</Dias>
                                 <Dias
                                     style={{
-                                        backgroundColor: diasClicados["Seg"] ? "#CFCFCF" : "#FFFFFF",
-                                        color: diasClicados["Seg"] ? "#FFFFFF" : "#DBDBDB",
+                                        backgroundColor: diasclicados["Seg"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasclicados["Seg"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
                                     onClick={() => colorir("Seg")}> S</Dias>
                                 <Dias
                                     style={{
-                                        backgroundColor: diasClicados["T"] ? "#CFCFCF" : "#FFFFFF",
-                                        color: diasClicados["T"] ? "#FFFFFF" : "#DBDBDB",
+                                        backgroundColor: diasclicados["T"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasclicados["T"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
                                     onClick={() => colorir("T")}> T</Dias>
                                 <Dias
                                     style={{
-                                        backgroundColor: diasClicados["Qa"] ? "#CFCFCF" : "#FFFFFF",
-                                        color: diasClicados["Qa"] ? "#FFFFFF" : "#DBDBDB",
+                                        backgroundColor: diasclicados["Qa"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasclicados["Qa"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
                                     onClick={() => colorir("Qa")}> Q</Dias>
                                 <Dias
                                     style={{
-                                        backgroundColor: diasClicados["Qi"] ? "#CFCFCF" : "#FFFFFF",
-                                        color: diasClicados["Qi"] ? "#FFFFFF" : "#DBDBDB",
+                                        backgroundColor: diasclicados["Qi"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasclicados["Qi"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
                                     onClick={() => colorir("Qi")}> Q</Dias>
                                 <Dias
                                     style={{
-                                        backgroundColor: diasClicados["Sex"] ? "#CFCFCF" : "#FFFFFF",
-                                        color: diasClicados["Sex"] ? "#FFFFFF" : "#DBDBDB",
+                                        backgroundColor: diasclicados["Sex"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasclicados["Sex"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
                                     onClick={() => colorir("Sex")}> S</Dias>
                                 <Dias
                                     style={{
-                                        backgroundColor: diasClicados["Sab"] ? "#CFCFCF" : "#FFFFFF",
-                                        color: diasClicados["Sab"] ? "#FFFFFF" : "#DBDBDB",
+                                        backgroundColor: diasclicados["Sab"] ? "#CFCFCF" : "#FFFFFF",
+                                        color: diasclicados["Sab"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
                                     onClick={() => colorir("Sab")}> S</Dias>
                             </Semana>
@@ -159,7 +203,7 @@ export default function Habitos(props) {
                                 <Cancelar>
                                     Cancelar
                                 </Cancelar>
-                                <Salvar  >
+                                <Salvar onClick={() => setsalvarclicked(true)}>
                                     Salvar
                                 </Salvar>
                             </Finalizar>
@@ -173,58 +217,70 @@ export default function Habitos(props) {
             )}
 
             {qual === '1' && (
-                <Preenche>
-                    <Titulo>
-                        So pra condifurar
-                        <IonIcon icon={trashOutline} className="icon" />
-                    </Titulo>
-                    <Semana>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["D"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["D"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                        > D</Dias>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["Seg"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["Seg"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                        > S</Dias>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["T"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["T"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                        > T</Dias>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["Qa"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["Qa"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                        > Q</Dias>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["Qi"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["Qi"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                        > Q</Dias>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["Sex"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["Sex"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                        > S</Dias>
-                        <Dias
-                            style={{
-                                backgroundColor: diasClicados["Sab"] ? "#CFCFCF" : "#FFFFFF",
-                                color: diasClicados["Sab"] ? "#FFFFFF" : "#DBDBDB",
-                            }}
-                        > S</Dias>
-                    </Semana>
+                <>
+                    {
+                        lista.map(lista => (
+                            <Preenche key={lista.id}>
+                                <Titulo>
+                                    {lista.name}
+                                    {lista.days}
+                                    <IonIcon
+                                    onClick={() => Deletar(lista.id)} 
+                                    icon={trashOutline} 
+                                    className="icon"
+                                     />
+                                </Titulo>
+                                <Semana>
+                                    <Dias
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["D"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["D"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > D</Dias>
+                                    <Dias
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["Seg"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["Seg"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > S</Dias>
+                                    <Dias
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["T"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["T"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > T</Dias>
+                                    <Dias
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["Qa"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["Qa"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > Q</Dias>
+                                    <Dias
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["Qi"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["Qi"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > Q</Dias>
+                                    <Dias
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["Sex"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["Sex"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > S</Dias>
+                                    <Dias
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["Sab"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["Sab"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > S</Dias>
+                                </Semana>
 
-                </Preenche>
+                            </Preenche>))
+                    }
+                </>
+
             )}
+
             <Rodape>
                 <Hab to={'/habitos'}> Habitos </Hab>
                 <Hoje src={Ho} />
@@ -242,7 +298,7 @@ const Total = styled.div`
     justify-content: center;
     align-items: center;
     flex-direction: column;
- //   background-color: #E5E5E5;
+    background-color: #E5E5E5;
     
 `
 const Titulo = styled.div`
@@ -261,7 +317,6 @@ const Titulo = styled.div`
    // background-color: #e81818;
     
 `
-
 const Cabecalho = styled.div`
     position: absolute;
     width: 100%;
@@ -273,8 +328,8 @@ const Cabecalho = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
-`
 
+`
 const Slogan = styled.div`
     width: 200px;
     height: 49px;
@@ -286,13 +341,11 @@ const Slogan = styled.div`
     color: #FFFFFF;
 
 `
-
 const Img = styled.img`
     width: 51px;
     height: 51px;
     border-radius: 98px;
     
-
 `
 const Topo = styled.div`
     width: 100%;
@@ -300,6 +353,7 @@ const Topo = styled.div`
     margin-top: 100px;
     display: flex;
     justify-content: space-between;
+
 `
 const Meus = styled.div`
     width: 148px;
@@ -336,9 +390,10 @@ const HabitosCadastrados = styled.div`
     font-size: 17.976px;
     line-height: 22px;
     color: #666666;
+
 `
 const Rodape = styled.div`
-    position: absolute;
+    position: fixed;
     width: 100%;
     height: 70px;
     left: 0px;
@@ -347,6 +402,8 @@ const Rodape = styled.div`
     display: flex;
     justify-content: space-around;
     align-items: center;
+    margin-top: 1000px;
+
 `
 const Hab = styled(Link)`
     width: 68px;
@@ -359,6 +416,7 @@ const Hab = styled(Link)`
     text-align: center;
     color: #52B6FF;
     text-decoration: none;
+
 `
 const Hoje = styled.img`
     width: 91px;
@@ -373,13 +431,18 @@ const Preencher = styled.div`
     height: 180px;
     background: #FFFFFF;
     border-radius: 5px;
+    margin-bottom: 50px;
+    //background-color: #e95119;
+
 `
 const Preenche = styled.div`
     width: 340px;
     height: 91px;
-    background: #FFFFFF;
+    background-color: #FFFFFF;
     border-radius: 5px;
-    margin-bottom: 50px;
+    margin-bottom: 10px;
+    //background-color: #e95119;
+
 `
 
 const Form = styled.form`
@@ -387,6 +450,7 @@ const Form = styled.form`
     justify-content: center;
     align-items: center;
     flex-direction: column;
+
 `
 const Email = styled.input`
     width: 303px;
@@ -405,6 +469,7 @@ const Email = styled.input`
     line-height: 25px; 
     color: #DBDBDB;
   }
+
 `
 const Semana = styled.div`
     display: flex;
@@ -475,4 +540,5 @@ const Salvar = styled.button`
     justify-content: center;
     align-items: center;
     border: none;
+
 `

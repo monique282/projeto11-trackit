@@ -9,11 +9,10 @@ import { Link } from "react-router-dom";
 import { useEffect } from "react";
 
 
-export default function SuccessPage(props) {
+export default function HojeA (props) {
 
     useEffect(() => {
         const { token } = props;
-        console.log(token);
         const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today'
         const conf = {
             headers: {
@@ -22,7 +21,7 @@ export default function SuccessPage(props) {
         }
         const promise = axios.get(URL, conf);
 
-        promise.then(resposta => console.log(resposta));
+        promise.then(resposta => console.log('deu certo'));
         promise.catch(resposta => alert('deu errado hoje'));
 
 

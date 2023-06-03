@@ -20,7 +20,6 @@ export default function App() {
                 <Route path='/' element={<Login settoken={settoken}/> }  />
                 <Route path='/cadastro' element={<Cadastro  />} />
                 <Route path='/habitos' element={<Habitos token={token} />} />
-                <Route path='/habitosC' element={<HabitosCompletos token={token} />} />
                 <Route path='/hoje' element={<Hoje token={token} />} />
 
 

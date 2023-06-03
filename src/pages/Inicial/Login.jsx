@@ -25,7 +25,6 @@ export default function Login(props) {
         setLoading(true);
 
         promise.then(resposta => {
-            console.log(resposta.data.token);
             settoken(resposta.data.token);
             navigate("/hoje");
         });
