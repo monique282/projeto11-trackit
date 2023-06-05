@@ -17,6 +17,8 @@ export default function Rota() {
 
 
     function mandarProServidor(e) {
+        setLoading(true);
+        setDisabledInputs(true);
         e.preventDefault();
         const dados = {
             email: email,
@@ -28,80 +30,80 @@ export default function Rota() {
         const urlDados = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up';
         const promise = axios.post(urlDados, dados);
         setLoading(true);
-        
+
         promise.then(resposta => navigate("/", {
-            
+
         }));
         promise.catch(resposta => {
             setLoading(false);
             setDisabledInputs(false);
             alert(resposta.response.data.message)
-         
+
         });
     }
 
-    
 
 
 
 
 
-return (
-    <Total>
-        <Slogan src={MinhaImagem} />
-        <Form onSubmit={mandarProServidor}>
-            <Email
-                type="email"
-                id="email"
-                required
-                value={email}
-                onChange={(e) => setemail(e.target.value)}
-                placeholder="email"
-                disabled={disabledInputs}
-                data-test="email-input"
-            />
-            <Email
-                type="password"
-                id="senha"
-                required
-                value={senha}
-                onChange={(e) => setsenha(e.target.value)}
-                placeholder="senha"
-                disabled={disabledInputs}
-                data-test="password-input"
-            />
-            <Email
-                type="text"
-                id="nome"
-                required
-                value={nome}
-                onChange={(e) => setnome(e.target.value)}
-                placeholder="nome"
-                disabled={disabledInputs}
-                data-test="user-name-input" 
-            />
-            <Email
-                type="text"
-                id="foto"
-                required
-                value={foto}
-                onChange={(e) => setfoto(e.target.value)}
-                placeholder="foto"
-                disabled={disabledInputs}
-                data-test="user-image-input" 
-            />
-            <Entrar disabled={loading || disabledInputs} data-test="signup-btn" >
 
-                {loading ? (
-                    <ThreeDots type="Oval" color="#FFFFFF" height={20} width={40} />
-                ) : (
-                    'Cadastrar'
-                )}
-            </Entrar>
-        </Form>
-        <Login to={'/'} data-test="login-link" >Já tem uma conta? Faça login!</Login>
-    </Total>
-)
+    return (
+        <Total>
+            <Slogan src={MinhaImagem} />
+            <Form onSubmit={mandarProServidor}>
+                <Email
+                    type="email"
+                    id="email"
+                    required
+                    value={email}
+                    onChange={(e) => setemail(e.target.value)}
+                    placeholder="email"
+                    disabled={disabledInputs}
+                    data-test="email-input"
+                />
+                <Email
+                    type="password"
+                    id="senha"
+                    required
+                    value={senha}
+                    onChange={(e) => setsenha(e.target.value)}
+                    placeholder="senha"
+                    disabled={disabledInputs}
+                    data-test="password-input"
+                />
+                <Email
+                    type="text"
+                    id="nome"
+                    required
+                    value={nome}
+                    onChange={(e) => setnome(e.target.value)}
+                    placeholder="nome"
+                    disabled={disabledInputs}
+                    data-test="user-name-input"
+                />
+                <Email
+                    type="text"
+                    id="foto"
+                    required
+                    value={foto}
+                    onChange={(e) => setfoto(e.target.value)}
+                    placeholder="foto"
+                    disabled={disabledInputs}
+                    data-test="user-image-input"
+                />
+                <Entrar disabled={loading || disabledInputs} data-test="signup-btn" >
+
+                    {loading ? (
+                        <ThreeDots type="Oval" color="#FFFFFF" height={20} width={40} />
+                    ) : (
+                        'Cadastrar'
+                    )}
+                </Entrar>
+            </Form>
+            <Login to={'/'} data-test="login-link" >Já tem uma conta? Faça login!</Login>
+        </Total>
+    )
 }
 
 const Total = styled.div`
