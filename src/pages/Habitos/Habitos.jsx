@@ -262,9 +262,9 @@ export default function Habitos() {
                                     {lista.name}
                                     <IonIcon
                                         onClick={() => {
-                                            Tenho(lista.id);
+                                            Tenho(lista.id),
                                             setcerteza('1'),
-                                                setsalvarclicked(true),
+                                                setsalvarclicked(true)
                                                 
                                         }}
                                         icon={trashOutline}
