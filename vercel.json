@@ -1,0 +1,8 @@
+{
+    "builds": [
+      {
+        "src": "<caminho_do_seu_diretorio_de_saida>",
+        "use": "@vercel/static"
+      }
+    ]
+  }
