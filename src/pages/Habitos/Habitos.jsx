@@ -83,6 +83,8 @@ export default function Habitos() {
 
     function Criar(e) {
         e.preventDefault();
+        setLoading(true);
+        setDisabledInputs(true);
 
         if (habito.trim() === '') {
             alert('O campo não foi preenchido. Por favor, insira um nome para o hábito.');
@@ -106,8 +108,18 @@ export default function Habitos() {
             }
         };
         const promise = axios.post(URL, dados, confi);
-        promise.then(resposta => { setsalvarclicked(true), setclicado(''), sethabito('') });
-        promise.catch(resposta => alert('deu errado'));
+        promise.then(resposta => {
+            setLoading(false),
+            setDisabledInputs(false),
+            setsalvarclicked(true),
+                setclicado(''),
+                sethabito('')
+        });
+        promise.catch(resposta => {
+            alert(resposta.response.data.message),
+            setLoading(false),
+            setDisabledInputs(false)
+        });
     }
 
     function colorir(dia) {
@@ -221,7 +233,7 @@ export default function Habitos() {
                                 </Dias>
                             </Semana>
                             <Finalizar>
-                                <Cancelar onClick={() => { setsalvarclicked(true), setclicado('') }} data-test="habit-create-cancel-btn">
+                                <Cancelar disabled={disabledInputs} onClick={() => { setsalvarclicked(true), setclicado('') }} data-test="habit-create-cancel-btn">
                                     Cancelar
                                 </Cancelar>
                                 <Salvar disabled={loading || disabledInputs} data-test="habit-create-save-btn">
@@ -253,8 +265,8 @@ export default function Habitos() {
                                         onClick={() => {
                                             Tenho();
                                             setcerteza('1'),
-                                            setsalvarclicked(true),
-                                            setids(lista.id);
+                                                setsalvarclicked(true),
+                                                setids(lista.id);
                                         }}
                                         icon={trashOutline}
                                         className="icon"
