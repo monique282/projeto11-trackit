@@ -32,12 +32,10 @@ export default function Rota() {
         promise.then(resposta => navigate("/", {
             
         }));
-        promise.catch(respota => {
+        promise.catch(resposta => {
             setLoading(false);
             setDisabledInputs(false);
-            setTimeout(() => {
-                alert("Email ja cadastrado");
-            }, 5000);
+            alert(resposta.response.data.message)
          
         });
     }
