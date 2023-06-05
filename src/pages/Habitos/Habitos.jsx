@@ -76,6 +76,8 @@ export default function Habitos() {
         setDisabledInputs(true);
         if (habito.trim() === '') {
             alert('O campo não foi preenchido. Por favor, insira um nome para o hábito.');
+            setDisabledInputs(false)
+            setLoading(false)
             return;
         }
         const diasselecionados = Object.keys(diasclicados).filter((dia) => diasclicados[dia]);
@@ -96,10 +98,10 @@ export default function Habitos() {
         const promise = axios.post(URL, dados, confi);
         promise.then(resposta => {
             setLoading(false),
-                setDisabledInputs(false),
-                setsalvarclicked(true),
-                setclicado(''),
-                sethabito('')
+            setDisabledInputs(false),
+            setsalvarclicked(true),
+            setclicado(''),
+            sethabito('')
         });
         promise.catch(resposta => {
             alert(resposta.response.data.message),
@@ -224,68 +226,68 @@ export default function Habitos() {
                         </Form>
                     </Preencher>
                     <TodosHabitos>
-                    {
-                        lista.map(lista => (
-                            <Preenche key={lista.id} data-test="habit-container">
-                                <Titulo data-test="habit-name">
-                                    {lista.name}
-                                    <IonIcon
-                                        onClick={() => {
-                                            Tenho(lista.id),
-                                            setsalvarclicked(true)
-                                        }}
-                                        icon={trashOutline}
-                                        className="icon"
-                                        data-test="habit-delete-btn"
-                                    />
-                                </Titulo>
-                                <Semana>
-                                    <Dias data-test="habit-day"
-                                        style={{
-                                            backgroundColor: lista.days.includes(diasmap["D"]) ? "#CFCFCF" : "#FFFFFF",
-                                            color: lista.days.includes(diasmap["D"]) ? "#FFFFFF" : "#DBDBDB",
-                                        }}
-                                    > D</Dias>
-                                    <Dias data-test="habit-day"
-                                        style={{
-                                            backgroundColor: lista.days.includes(diasmap["Seg"]) ? "#CFCFCF" : "#FFFFFF",
-                                            color: lista.days.includes(diasmap["Seg"]) ? "#FFFFFF" : "#DBDBDB",
-                                        }}
-                                    > S</Dias>
-                                    <Dias data-test="habit-day"
-                                        style={{
-                                            backgroundColor: lista.days.includes(diasmap["T"]) ? "#CFCFCF" : "#FFFFFF",
-                                            color: lista.days.includes(diasmap["T"]) ? "#FFFFFF" : "#DBDBDB",
-                                        }}
-                                    > T</Dias>
-                                    <Dias data-test="habit-day"
-                                        style={{
-                                            backgroundColor: lista.days.includes(diasmap["Qa"]) ? "#CFCFCF" : "#FFFFFF",
-                                            color: lista.days.includes(diasmap["Qa"]) ? "#FFFFFF" : "#DBDBDB",
-                                        }}
-                                    > Q</Dias>
-                                    <Dias data-test="habit-day"
-                                        style={{
-                                            backgroundColor: lista.days.includes(diasmap["Qi"]) ? "#CFCFCF" : "#FFFFFF",
-                                            color: lista.days.includes(diasmap["Qi"]) ? "#FFFFFF" : "#DBDBDB",
-                                        }}
-                                    > Q</Dias>
-                                    <Dias data-test="habit-day"
-                                        style={{
-                                            backgroundColor: lista.days.includes(diasmap["Sex"]) ? "#CFCFCF" : "#FFFFFF",
-                                            color: lista.days.includes(diasmap["Sex"]) ? "#FFFFFF" : "#DBDBDB",
-                                        }}
-                                    > S</Dias>
-                                    <Dias data-test="habit-day"
-                                        style={{
-                                            backgroundColor: lista.days.includes(diasmap["Sab"]) ? "#CFCFCF" : "#FFFFFF",
-                                            color: lista.days.includes(diasmap["Sab"]) ? "#FFFFFF" : "#DBDBDB",
-                                        }}
-                                    > S</Dias>
-                                </Semana>
-                            </Preenche>))
-                    }
-                </TodosHabitos>
+                        {
+                            lista.map(lista => (
+                                <Preenche key={lista.id} data-test="habit-container">
+                                    <Titulo data-test="habit-name">
+                                        {lista.name}
+                                        <IonIcon
+                                            onClick={() => {
+                                                Tenho(lista.id),
+                                                    setsalvarclicked(true)
+                                            }}
+                                            icon={trashOutline}
+                                            className="icon"
+                                            data-test="habit-delete-btn"
+                                        />
+                                    </Titulo>
+                                    <Semana>
+                                        <Dias data-test="habit-day"
+                                            style={{
+                                                backgroundColor: lista.days.includes(diasmap["D"]) ? "#CFCFCF" : "#FFFFFF",
+                                                color: lista.days.includes(diasmap["D"]) ? "#FFFFFF" : "#DBDBDB",
+                                            }}
+                                        > D</Dias>
+                                        <Dias data-test="habit-day"
+                                            style={{
+                                                backgroundColor: lista.days.includes(diasmap["Seg"]) ? "#CFCFCF" : "#FFFFFF",
+                                                color: lista.days.includes(diasmap["Seg"]) ? "#FFFFFF" : "#DBDBDB",
+                                            }}
+                                        > S</Dias>
+                                        <Dias data-test="habit-day"
+                                            style={{
+                                                backgroundColor: lista.days.includes(diasmap["T"]) ? "#CFCFCF" : "#FFFFFF",
+                                                color: lista.days.includes(diasmap["T"]) ? "#FFFFFF" : "#DBDBDB",
+                                            }}
+                                        > T</Dias>
+                                        <Dias data-test="habit-day"
+                                            style={{
+                                                backgroundColor: lista.days.includes(diasmap["Qa"]) ? "#CFCFCF" : "#FFFFFF",
+                                                color: lista.days.includes(diasmap["Qa"]) ? "#FFFFFF" : "#DBDBDB",
+                                            }}
+                                        > Q</Dias>
+                                        <Dias data-test="habit-day"
+                                            style={{
+                                                backgroundColor: lista.days.includes(diasmap["Qi"]) ? "#CFCFCF" : "#FFFFFF",
+                                                color: lista.days.includes(diasmap["Qi"]) ? "#FFFFFF" : "#DBDBDB",
+                                            }}
+                                        > Q</Dias>
+                                        <Dias data-test="habit-day"
+                                            style={{
+                                                backgroundColor: lista.days.includes(diasmap["Sex"]) ? "#CFCFCF" : "#FFFFFF",
+                                                color: lista.days.includes(diasmap["Sex"]) ? "#FFFFFF" : "#DBDBDB",
+                                            }}
+                                        > S</Dias>
+                                        <Dias data-test="habit-day"
+                                            style={{
+                                                backgroundColor: lista.days.includes(diasmap["Sab"]) ? "#CFCFCF" : "#FFFFFF",
+                                                color: lista.days.includes(diasmap["Sab"]) ? "#FFFFFF" : "#DBDBDB",
+                                            }}
+                                        > S</Dias>
+                                    </Semana>
+                                </Preenche>))
+                        }
+                    </TodosHabitos>
                 </>
             )}
 
@@ -299,7 +301,7 @@ export default function Habitos() {
                                     <IonIcon
                                         onClick={() => {
                                             Tenho(lista.id),
-                                            setsalvarclicked(true)
+                                                setsalvarclicked(true)
                                         }}
                                         icon={trashOutline}
                                         className="icon"
