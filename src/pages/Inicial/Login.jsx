@@ -18,6 +18,8 @@ export default function Login() {
 
 
     function mandarProServidor(e) {
+        setLoading(true);
+        setDisabledInputs(true);
         e.preventDefault();
         const dados = {
             email: email,
