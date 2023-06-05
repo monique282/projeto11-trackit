@@ -82,7 +82,14 @@ export default function Habitos() {
 
 
     function Criar(e) {
+    
         e.preventDefault();
+
+        if (habito.trim() === '') {
+            alert('O campo não foi preenchido. Por favor, insira um nome para o hábito.');
+            return;
+          }
+
         const diasselecionados = Object.keys(diasclicados).filter((dia) => diasclicados[dia]);
         const diasnumeros = diasselecionados.map((dia) => diasmap[dia]);
         console.log(diasselecionados);
@@ -153,7 +160,6 @@ export default function Habitos() {
                             <Email
                                 type="text"
                                 id="habito"
-                                required
                                 value={habito}
                                 onChange={(e) => sethabito(e.target.value)}
                                 placeholder="nome do Habito"
