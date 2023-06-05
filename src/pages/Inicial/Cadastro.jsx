@@ -34,8 +34,9 @@ export default function Rota() {
         }));
         promise.catch(respota => {
             setLoading(false);
+            setDisabledInputs(false);
             setTimeout(() => {
-                alert(erro.response.data.message);
+                alert("Email ja cadastrado");
             }, 5000);
          
         });
