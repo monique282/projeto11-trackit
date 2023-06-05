@@ -19,7 +19,6 @@ export default function Habitos() {
     const [qual, setqual] = useState('');
     const [lista, setlista] = useState([]);
     const [certeza, setcerteza] = useState('');
-    const [ids, setids] = useState();
     const [loading, setLoading] = useState(false);
     const [disabledInputs, setDisabledInputs] = useState(false);
     const [salvarclicked, setsalvarclicked] = useState(false);
@@ -130,10 +129,10 @@ export default function Habitos() {
     };
 
 
-    function Tenho() {
-        console.log(ids);
+    function Tenho(id) {
+       
         const conf = window.confirm('Desejar deletar hábito?');
-        const url = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${ids}`;
+        const url = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`;
         const confi = {
             headers: {
                 Authorization: `Bearer ${token}`
@@ -263,10 +262,10 @@ export default function Habitos() {
                                     {lista.name}
                                     <IonIcon
                                         onClick={() => {
-                                            Tenho();
+                                            Tenho(lista.id);
                                             setcerteza('1'),
                                                 setsalvarclicked(true),
-                                                setids(lista.id);
+                                                
                                         }}
                                         icon={trashOutline}
                                         className="icon"
