@@ -165,7 +165,7 @@ export default function Habitos() {
                                         backgroundColor: diasclicados["D"] ? "#CFCFCF" : "#FFFFFF",
                                         color: diasclicados["D"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
-                                    onClick={() => colorir("D")} >data-test="habit-day"  D
+                                    onClick={() => colorir("D")} data-test="habit-day" >  D
                                 </Dias>
                                 <Dias
                                     style={{
