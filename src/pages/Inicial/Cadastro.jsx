@@ -12,6 +12,7 @@ export default function Rota() {
     const [nome, setnome] = useState('');
     const [foto, setfoto] = useState('');
     const [loading, setLoading] = useState(false);
+    const [disabledInputs, setDisabledInputs] = useState(false);
     const navigate = useNavigate();
 
 
@@ -57,6 +58,7 @@ return (
                 value={email}
                 onChange={(e) => setemail(e.target.value)}
                 placeholder="email"
+                disabled={disabledInputs}
                 data-test="email-input"
             />
             <Email
@@ -66,6 +68,7 @@ return (
                 value={senha}
                 onChange={(e) => setsenha(e.target.value)}
                 placeholder="senha"
+                disabled={disabledInputs}
                 data-test="password-input"
             />
             <Email
@@ -75,6 +78,7 @@ return (
                 value={nome}
                 onChange={(e) => setnome(e.target.value)}
                 placeholder="nome"
+                disabled={disabledInputs}
                 data-test="user-name-input" 
             />
             <Email
@@ -84,9 +88,10 @@ return (
                 value={foto}
                 onChange={(e) => setfoto(e.target.value)}
                 placeholder="foto"
+                disabled={disabledInputs}
                 data-test="user-image-input" 
             />
-            <Entrar disabled={loading} data-test="signup-btn" >
+            <Entrar disabled={loading || disabledInputs} data-test="signup-btn" >
 
                 {loading ? (
                     <ThreeDots type="Oval" color="#FFFFFF" height={20} width={40} />

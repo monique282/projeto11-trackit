@@ -12,7 +12,7 @@ import 'dayjs/locale/pt-br';
 
 
 
-export default function HojeA(props) {
+export default function HojeA() {
     const { token, concluidos, setconcluidos } = useContext(AuthContext);
     const [lista, setlista] = useState([]);
     const [salvarclicked, setsalvarclicked] = useState(false);
@@ -121,7 +121,7 @@ export default function HojeA(props) {
                             <Sequencia>
 
                                 <p  data-test="today-habit-sequence">
-                                    Sequência atual: <span style={{ color: lista.done ? "#8FC549" : "#666666" }}>
+                                    Sequência atual: <span style={{ color: lista.done ? "#8FC549"  : "#666666" }}>
                                         {lista.currentSequence} dias</span>
                                 </p> <br></br>
 
