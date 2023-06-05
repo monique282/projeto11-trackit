@@ -1,8 +1,16 @@
 {
+    "version": 2,
     "builds": [
       {
-        "src": "<caminho_do_seu_diretorio_de_saida>",
+        "src": "dist/**",
         "use": "@vercel/static"
+      }
+    ],
+    "routes": [
+      {
+        "src": "/(.*)",
+        "dest": "/index.html"
       }
     ]
   }
+  
