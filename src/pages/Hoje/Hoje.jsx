@@ -10,8 +10,6 @@ import dayjs from "dayjs";
 import { AuthContext } from "../Contex/Sose"
 import 'dayjs/locale/pt-br';
 
-
-
 export default function HojeA() {
     const { token, concluidos, setconcluidos } = useContext(AuthContext);
     const [lista, setlista] = useState([]);
@@ -22,7 +20,6 @@ export default function HojeA() {
     const [day, setDay] = useState(capitalizeFirstLetter(dayjs().locale('pt-br').format('dddd, DD/MM')));
     const [total, settotal] = useState();
 
-
     useEffect(() => {
         const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today'
         const conf = {
@@ -31,7 +28,6 @@ export default function HojeA() {
             }
         }
         const promise = axios.get(URL, conf);
-
         promise.then(resposta => {
             console.log(resposta.data);
             setlista(resposta.data)
@@ -42,11 +38,8 @@ export default function HojeA() {
             console.log(arredondado);
             setconcluidos(arredondado);
             settotal(resposta.data.length);
-
         });
-        promise.catch(resposta => alert('deu errado hoje'));
-
-
+        promise.catch(resposta => alert(resposta.response.data.message));
     }, [salvarclicked]);
 
     console.log(porcenta)
@@ -60,24 +53,16 @@ export default function HojeA() {
             }
         }
         const promise = axios.post(URL, null, conf);
-
         promise.then(resposta => {
             console.log(resposta);
-            // Atualiza o estado do hábito concluído
             setsalvarclicked(true);
-
         });
         promise.catch(resposta => {
             Desmarcar(id);
         });
     }
-    // pegar o done do servidor
-    // se for false fique branco
-    // se for true fique verde 
-    /** */
 
     function Desmarcar(id) {
-
         const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`;
         const conf = {
             headers: {
@@ -85,17 +70,12 @@ export default function HojeA() {
             }
         }
         const promise = axios.post(URL, null, conf);
-
         promise.then(resposta => {
             console.log(resposta);
-            // Atualiza o estado do hábito concluído
             setsalvarclicked(true);
-
         });
         promise.catch(resposta => alert('deu errado hoje desmarcar'));
     };
-
-
 
     return (
         <Total>
@@ -105,28 +85,25 @@ export default function HojeA() {
                     {day}
                 </Data>
                 <Concluido data-test="today-counter">
-                     {total === 0  && (<p>Nenhum hábito concluído ainda</p>)}
+                    {total === 0 && (<p>Nenhum hábito concluído ainda</p>)}
                     {concluidos === 0 && (<p>Nenhum hábito concluído ainda</p>)}
-                    {concluidos !== 0 && total !==0 && (<h1> {concluidos}% doas hábitos concluidos</h1>)}
-
+                    {concluidos !== 0 && total !== 0 && (<h1> {concluidos}% doas hábitos concluidos</h1>)}
                 </Concluido>
             </Topo>
 
             <ListaHabitos>
                 {lista.map(lista => (
-
                     <Hab key={lista.id} data-test="today-habit-container" >
                         <Esquerdo>
-                            <Titulo  data-test="today-habit-name">
+                            <Titulo data-test="today-habit-name">
                                 {lista.name}
                             </Titulo>
                             <Sequencia>
-
-                                <p  data-test="today-habit-sequence">
-                                    Sequência atual: <span style={{ color: lista.done ? "#8FC549"  : "#666666" }}>
+                                <p data-test="today-habit-sequence">
+                                    Sequência atual: <span style={{ color: lista.done ? "#8FC549" : "#666666" }}>
                                         {lista.currentSequence} dias</span>
-                                </p> <br></br>
-
+                                </p> 
+                                <br></br>
                                 {(lista.highestSequence) > 0 && (
                                     <p data-test="today-habit-record">
                                         Seu recorde: <span style={{ color: (lista.currentSequence) === (lista.highestSequence) && lista.done ? "#8FC549" : "#666666" }}>
@@ -139,12 +116,10 @@ export default function HojeA() {
                                             {lista.highestSequence} dias </span>
                                     </p>
                                 )}
-
                             </Sequencia>
-
                         </Esquerdo>
                         <Direito>
-                            <Quadrado onClick={() => { Marcar(lista.id) }}  data-test="today-habit-check-btn">
+                            <Quadrado onClick={() => { Marcar(lista.id) }} data-test="today-habit-check-btn">
                                 <IonIcon
                                     style={{
                                         backgroundColor: lista.done ? "#8FC549" : "#EBEBEB"
@@ -158,17 +133,12 @@ export default function HojeA() {
                 ))
                 }
             </ListaHabitos>
-
-
             <Abaixo />
-
-
         </Total>
     )
-
 }
-const Total = styled.div`
 
+const Total = styled.div`
     width: 100%;
     display: flex;
     align-items: center;
@@ -184,7 +154,6 @@ const Topo = styled.div`
     flex-direction: column;
     
 `
-
 const Data = styled.div`
     width: 100%;
     height: 29px;
@@ -195,7 +164,6 @@ const Data = styled.div`
     line-height: 29px;
     color: #126BA5;
     margin-left: 10px;
-   
 
 `
 const Concluido = styled.div`
@@ -225,8 +193,6 @@ const ListaHabitos = styled.div`
     align-items: center;
     flex-direction: column;
     margin-bottom: 150px;
-    //background-color: #e51313;
-
    
 `
 const Hab = styled.div`
@@ -268,7 +234,6 @@ const Sequencia = styled.div`
     margin-bottom: 0px;
     margin-top: 0px;
     margin-left: 20px;
-   
 
 `
 const Direito = styled.div`

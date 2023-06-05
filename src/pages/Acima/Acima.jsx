@@ -3,18 +3,14 @@ import { useContext } from "react";
 import {AuthContext} from "../Contex/Sose"
 import styled from "styled-components";
 
-
-
 export default function Acima() {
     const {image} = useContext(AuthContext);
 
     return (
-
         <Cabecalho data-test="header">
             <Slogan>TrackIt </Slogan>
             <Img src={image} data-test="avatar"/>
         </Cabecalho>
-
     )
 }
 
@@ -30,6 +26,7 @@ const Cabecalho = styled.div`
     justify-content: space-around;
     align-items: center;
     z-index: 600;
+
 `
 
 const Slogan = styled.div`
@@ -42,7 +39,6 @@ const Slogan = styled.div`
     line-height: 49px;
     color: #FFFFFF;
     
-
 `
 
 const Img = styled.img`

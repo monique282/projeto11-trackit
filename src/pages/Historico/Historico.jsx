@@ -1,27 +1,14 @@
 
 import styled from "styled-components";
-import { IonIcon } from '@ionic/react';
-import { checkmarkOutline } from 'ionicons/icons';
 import Acima from "../Acima/Acima";
 import Abaixo from "../Abaixo/Abaixo";
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import dayjs from "dayjs";
-import { AuthContext } from "../Contex/Sose"
-import 'dayjs/locale/pt-br';
+import { AuthContext } from "../Contex/Sose";
 
-
-
-export default function HojeA(props) {
-    const { token, concluidos, setconcluidos } = useContext(AuthContext);
-    const [lista, setlista] = useState([]);
+export default function Historico() {
+    const { token } = useContext(AuthContext);
     const [salvarclicked, setsalvarclicked] = useState(false);
-    const [porcenta, setporcenta] = useState([]);
-    //retorna a primeira letra maiuscula
-    const capitalizeFirstLetter = (string) => { return string.charAt(0).toUpperCase() + string.slice(1); };
-    const [day, setDay] = useState(capitalizeFirstLetter(dayjs().locale('pt-br').format('dddd, DD/MM')));
-    const [total, settotal] = useState();
-
 
     useEffect(() => {
         const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/history/daily'
@@ -33,38 +20,24 @@ export default function HojeA(props) {
         const promise = axios.get(URL, conf);
 
         promise.then(resposta => {
-            console.log(resposta.data);
-           
-        });
-        promise.catch(resposta => alert('deu errado hoje'));
 
+        });
+        promise.catch(resposta => alert(resposta.response.data.message));
 
     }, [salvarclicked]);
-
-    console.log(porcenta)
-
-   
-     
-
 
     return (
         <Total>
             <Acima />
             <Topo>
-              Histórico
+                Histórico
             </Topo>
-
             <ListaHabitos>
-            Em breve você poderá ver o histórico dos seus hábitos aqui!
+                Em breve você poderá ver o histórico dos seus hábitos aqui!
             </ListaHabitos>
-
-
             <Abaixo />
-
-
         </Total>
     )
-
 }
 const Total = styled.div`
 
@@ -87,7 +60,6 @@ const Topo = styled.div`
     font-size: 23px;
     line-height: 29px;
     color: #126BA5;
-   // margin-right: 10px;
     margin-left: 17px;
 `
 
@@ -105,8 +77,6 @@ const ListaHabitos = styled.div`
     line-height: 22px;
     color: #666666;
     margin-left: 17px;
-    //background-color: #e51313;
-
    
 `
 

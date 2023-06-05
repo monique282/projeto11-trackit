@@ -3,7 +3,7 @@ import { useState } from "react";
 import Acima from "../Acima/Acima";
 import Abaixo from "../Abaixo/Abaixo";
 import axios from "axios";
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import { useEffect } from "react";
 import { IonIcon } from '@ionic/react';
 import { trashOutline } from 'ionicons/icons';
@@ -18,7 +18,6 @@ export default function Habitos() {
     const [habito, sethabito] = useState('');
     const [qual, setqual] = useState('');
     const [lista, setlista] = useState([]);
-    const [certeza, setcerteza] = useState('');
     const [loading, setLoading] = useState(false);
     const [disabledInputs, setDisabledInputs] = useState(false);
     const [salvarclicked, setsalvarclicked] = useState(false);
@@ -41,9 +40,7 @@ export default function Habitos() {
         Sab: 6,
     };
 
-    // presiso chamar a lista antes de tudo
     useEffect(() => {
-        // vizualizar abito
         const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits'
         const confi = {
             headers: {
@@ -51,18 +48,14 @@ export default function Habitos() {
             }
         };
         const promise = axios.get(URL, confi);
-        // verificar se a data esta fazia
         promise.then(resposta => {
             if (resposta.data.length === 0) {
                 console.log('nada');
                 setqual('');
             } else {
-                // console.log(lista);
                 console.log(resposta.data);
-                //  console.log(resposta.data.days);
-                setlista(resposta.data)
-                // console.log(lista.days)
-                setqual('1')
+                setlista(resposta.data);
+                setqual('1');
             }
         });
         setsalvarclicked(false);
@@ -75,21 +68,16 @@ export default function Habitos() {
             Sex: false,
             Sab: false,
         })
-        // promise.catch(resposta => alert('deu errado salvar'));
     }, [salvarclicked]);
-
-
 
     function Criar(e) {
         e.preventDefault();
         setLoading(true);
         setDisabledInputs(true);
-
         if (habito.trim() === '') {
             alert('O campo não foi preenchido. Por favor, insira um nome para o hábito.');
             return;
         }
-
         const diasselecionados = Object.keys(diasclicados).filter((dia) => diasclicados[dia]);
         const diasnumeros = diasselecionados.map((dia) => diasmap[dia]);
         console.log(diasselecionados);
@@ -98,7 +86,6 @@ export default function Habitos() {
             name: habito,
             days: diasnumeros
         };
-        // criar abito
 
         const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits'
         const confi = {
@@ -109,18 +96,17 @@ export default function Habitos() {
         const promise = axios.post(URL, dados, confi);
         promise.then(resposta => {
             setLoading(false),
-            setDisabledInputs(false),
-            setsalvarclicked(true),
+                setDisabledInputs(false),
+                setsalvarclicked(true),
                 setclicado(''),
                 sethabito('')
         });
         promise.catch(resposta => {
             alert(resposta.response.data.message),
-            setLoading(false),
-            setDisabledInputs(false)
+                setLoading(false),
+                setDisabledInputs(false)
         });
     }
-
     function colorir(dia) {
         setdiasclicados((prevdiasclicados) => ({
             ...prevdiasclicados,
@@ -128,9 +114,7 @@ export default function Habitos() {
         }));
     };
 
-
     function Tenho(id) {
-       
         const conf = window.confirm('Desejar deletar hábito?');
         const url = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`;
         const confi = {
@@ -141,10 +125,6 @@ export default function Habitos() {
         const promise = axios.delete(url, confi);
         promise.then(resposta => {
             setsalvarclicked(true);
-            setcerteza(''),
-
-                console.log('Requisição DELETE enviada com sucesso!');
-            console.log('Status:', resposta.status);
         })
         promise.catch(error => {
             console.error('Ocorreu um erro ao enviar a requisição DELETE:', error);
@@ -158,12 +138,10 @@ export default function Habitos() {
                 <Meus> Meus hábitos </Meus>
                 <Mais onClick={() => { setclicado('ver'), setqual('') }} data-test="habit-create-btn" >+</Mais>
             </Topo>
-
             {qual === '' && clicado === '' && (
                 <HabitosCadastrados>
                     Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!
                 </HabitosCadastrados>)}
-
             {qual === '' && clicado === 'ver' && (
                 <>
                     <Preencher data-test="habit-create-container">
@@ -241,20 +219,11 @@ export default function Habitos() {
                                     ) : (
                                         ' Salvar'
                                     )}
-
                                 </Salvar>
                             </Finalizar>
                         </Form>
-
                     </Preencher>
-                    <HabitosCadastrados>
-                        Você não tem nenhum hábito cadastrado ainda. Adicione um hábito para começar a trackear!
-                    </HabitosCadastrados>
-                </>
-            )}
-
-            {qual === '1' && (
-                <TodosHabitos>
+                    <TodosHabitos>
                     {
                         lista.map(lista => (
                             <Preenche key={lista.id} data-test="habit-container">
@@ -263,9 +232,7 @@ export default function Habitos() {
                                     <IonIcon
                                         onClick={() => {
                                             Tenho(lista.id),
-                                            setcerteza('1'),
-                                                setsalvarclicked(true)
-                                                
+                                            setsalvarclicked(true)
                                         }}
                                         icon={trashOutline}
                                         className="icon"
@@ -316,14 +283,77 @@ export default function Habitos() {
                                         }}
                                     > S</Dias>
                                 </Semana>
-
                             </Preenche>))
                     }
                 </TodosHabitos>
-
-
+                </>
             )}
 
+            {qual === '1' && (
+                <TodosHabitos>
+                    {
+                        lista.map(lista => (
+                            <Preenche key={lista.id} data-test="habit-container">
+                                <Titulo data-test="habit-name">
+                                    {lista.name}
+                                    <IonIcon
+                                        onClick={() => {
+                                            Tenho(lista.id),
+                                            setsalvarclicked(true)
+                                        }}
+                                        icon={trashOutline}
+                                        className="icon"
+                                        data-test="habit-delete-btn"
+                                    />
+                                </Titulo>
+                                <Semana>
+                                    <Dias data-test="habit-day"
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["D"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["D"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > D</Dias>
+                                    <Dias data-test="habit-day"
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["Seg"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["Seg"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > S</Dias>
+                                    <Dias data-test="habit-day"
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["T"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["T"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > T</Dias>
+                                    <Dias data-test="habit-day"
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["Qa"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["Qa"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > Q</Dias>
+                                    <Dias data-test="habit-day"
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["Qi"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["Qi"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > Q</Dias>
+                                    <Dias data-test="habit-day"
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["Sex"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["Sex"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > S</Dias>
+                                    <Dias data-test="habit-day"
+                                        style={{
+                                            backgroundColor: lista.days.includes(diasmap["Sab"]) ? "#CFCFCF" : "#FFFFFF",
+                                            color: lista.days.includes(diasmap["Sab"]) ? "#FFFFFF" : "#DBDBDB",
+                                        }}
+                                    > S</Dias>
+                                </Semana>
+                            </Preenche>))
+                    }
+                </TodosHabitos>
+            )}
             <Abaixo />
         </Total>
     )
@@ -339,12 +369,7 @@ const Total = styled.div`
     flex-direction: column;
     background-color: #E5E5E5;
     position: relative; 
-    ${({ showOverlay }) =>
-        showOverlay &&
-        css`
-      background-color: rgba(229, 229, 229, 0.8); 
-    `}
-    
+   
 `
 const Titulo = styled.div`
     width: 340px;
@@ -424,8 +449,7 @@ const Preencher = styled.div`
     background: #FFFFFF;
     border-radius: 5px;
     margin-bottom: 50px;
-    //background-color: #e95119;
-
+ 
 `
 const Preenche = styled.div`
     width: 340px;
@@ -433,13 +457,10 @@ const Preenche = styled.div`
     background-color: #FFFFFF;
     border-radius: 5px;
     margin-bottom: 10px;
-    //background-color: #e95119;
 
 `
 const TodosHabitos = styled.div`
-    
     margin-bottom: 150px;
-    //background-color: #e95119;
 
 `
 
@@ -457,9 +478,11 @@ const Email = styled.input`
     border: 1px solid #D5D5D5;
     border-radius: 5px;
     padding-left: 11px;
-    margin-top: 6px;
+    margin-top: 15px;
+    margin-bottom: 3px;
     
-    ::placeholder { 
+    ::placeholder {
+
     font-family: 'Lexend Deca';
     font-style: normal;
     font-weight: 400;
@@ -470,12 +493,15 @@ const Email = styled.input`
 
 `
 const Semana = styled.div`
+    width: 303px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
     padding-left: 11px;
-    margin-top: 8px;
-
+    margin-top: 0px;
+    margin-right: 0px;
+    margin-bottom: 10px;
 
 `
 const Dias = styled.div`
@@ -487,11 +513,11 @@ const Dias = styled.div`
     font-family: 'Lexend Deca';
     font-style: normal;
     font-weight: 400;
-    font-size: 19.976px;
+    font-size: 20px;
     line-height: 25px;
     color: #DBDBDB;
     text-align: center;
-    margin-left: 4px;
+    margin-right: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -501,7 +527,7 @@ const Finalizar = styled.div`
     width: 100%;
     height: 35px;
     display: flex;
-    margin-top: 25px;
+    margin-top: 10px;
     align-items: center;
     justify-content: flex-end;
    
@@ -522,20 +548,6 @@ const Cancelar = styled.div`
     align-items: center;
 
 `
-const Tudo = styled.div`
-    width: 100%;
-    height: 100%;
-    background-color: rgba(255, 255, 255, 0.6);
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left:0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 20px;
-
-`
 
 const Salvar = styled.button`
     width: 84px;
@@ -550,54 +562,10 @@ const Salvar = styled.button`
     text-align: center;
     color: #FFFFFF;
     margin-left: 25px;
+    margin-right: 25px;
     display: flex;
     justify-content: center;
     align-items: center;
     border: none;
 
-`
-const Realmente = styled.div`
-    width: 340px;
-    height: 180px;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    z-index: 999;
-    background-color: #126BA5;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    border-radius: 5px;
-
-    p{
-        font-family: 'Lexend Deca';
-        font-style: normal;
-        font-weight: 400;
-        font-size: 20px;
-        line-height: 25px;
-    }
-
-`
-const Botoes = styled.div`
-   
-    display: felex;
-    margin-top: 25px;
-
-`
-
-const Sim = styled.button`
-    width: 84px;
-    height: 35px;
-    background-color:#5bee0c;
-  
-
-`
-const Nao = styled.button`
-    width: 84px;
-    height: 35px;
-    background-color:#e70a0a;
-    border: none;
-    margin-left: 25px;
 `

@@ -7,6 +7,7 @@ const GlobalStyle = createGlobalStyle`
 
    body {
     background-color: #E5E5E5;
+
    }
 
 	button {

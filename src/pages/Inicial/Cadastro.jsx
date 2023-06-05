@@ -15,7 +15,6 @@ export default function Rota() {
     const [disabledInputs, setDisabledInputs] = useState(false);
     const navigate = useNavigate();
 
-
     function mandarProServidor(e) {
         setLoading(true);
         setDisabledInputs(true);
@@ -26,27 +25,17 @@ export default function Rota() {
             image: foto,
             password: senha
         }
-
         const urlDados = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/sign-up';
         const promise = axios.post(urlDados, dados);
         setLoading(true);
 
-        promise.then(resposta => navigate("/", {
-
-        }));
+        promise.then(resposta => navigate("/", {}));
         promise.catch(resposta => {
             setLoading(false);
             setDisabledInputs(false);
             alert(resposta.response.data.message)
-
         });
     }
-
-
-
-
-
-
 
     return (
         <Total>
@@ -93,7 +82,6 @@ export default function Rota() {
                     data-test="user-image-input"
                 />
                 <Entrar disabled={loading || disabledInputs} data-test="signup-btn" >
-
                     {loading ? (
                         <ThreeDots type="Oval" color="#FFFFFF" height={20} width={40} />
                     ) : (

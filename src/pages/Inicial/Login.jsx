@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import styled from "styled-components"
+import styled from "styled-components";
 import MinhaImagem from '../../assets/Group 8.png';
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
@@ -16,7 +16,6 @@ export default function Login() {
     const [disabledInputs, setDisabledInputs] = useState(false);
     const navigate = useNavigate();
 
-
     function mandarProServidor(e) {
         setLoading(true);
         setDisabledInputs(true);
@@ -27,22 +26,17 @@ export default function Login() {
         }
         const urlDados = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/auth/login';
         const promise = axios.post(urlDados, dados);
-        setLoading(true);
-
         promise.then(resposta => {
             setimage(resposta.data.image);
             settoken(resposta.data.token);
             navigate("/hoje");
         });
 
-
-        promise.catch(respota => {
+        promise.catch(resposta => {
             setLoading(false);
             setDisabledInputs(false);
-            alert('deu essado');
-
+            alert(resposta.response.data.message);
         });
-
     }
 
     return (
@@ -70,24 +64,18 @@ export default function Login() {
                     data-test="password-input"
                 />
                 <Entrar disabled={loading || disabledInputs} data-test="login-btn">
-
                     {loading ? (
-
                         <ThreeDots
                             color="#FFFFFF"
                             height={20}
                             width={40}
                             visible={true}
-                            style={{ flex: "1", width: "100%" }}
-                        />
-
+                            style={{ flex: "1", width: "100%" }}/>
                     ) : (
                         'Entrar'
                     )}
-
                 </Entrar>
             </Form>
-            {/* preciso configurar o botão de cadastrar*/}
             <Cadastrar to={'/cadastro'} data-test="signup-link" >Não tem uma conta? Cadastre-se!</Cadastrar>
         </Total>
     )
@@ -132,7 +120,8 @@ const Email = styled.input`
     font-size: 19px;
     line-height: 25px; 
     color: #DBDBDB;
-  }
+    }
+    
 `
 const Entrar = styled.button`
     width: 303px;
@@ -165,7 +154,5 @@ const Cadastrar = styled(Link)`
     text-decoration-line: underline;
     color: #52B6FF;
     margin-top: 25px;
-    
- 
 
 `
