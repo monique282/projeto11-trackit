@@ -10,9 +10,9 @@ export default function Abaixo() {
 
     return (
 
-        <Rodape>
-            <Habi to={'/habitos'}> Habitos </Habi>
-            <Hoje to={'/hoje'} >
+        <Rodape  data-test="menu" >
+            <Habi to={'/habitos'} data-test="habit-link" > Habitos </Habi>
+            <Hoje to={'/hoje'} data-test="today-link" >
                 <CircularProgressbar
                     value={concluidos}
                     text="Hoje"
@@ -28,7 +28,7 @@ export default function Abaixo() {
                     }}
                 />
             </Hoje>
-            <Habi to={'/'}> Histórico </Habi>
+            <Habi to={'/historico'} data-test="history-link" > Histórico </Habi>
         </Rodape>
 
     )
@@ -62,7 +62,7 @@ const Hoje = styled(Link)`
     height: 91px;
     background-color: #52B6FF;
     border-radius: 98px;
-    margin-bottom : 10%;
+    margin-bottom : 5%;
     text-decoration: none;
     display: flex;
     justify-content: center;

@@ -5,7 +5,6 @@ import { checkmarkOutline } from 'ionicons/icons';
 import Acima from "../Acima/Acima";
 import Abaixo from "../Abaixo/Abaixo";
 import axios from "axios";
-
 import { useContext, useEffect, useState } from "react";
 import dayjs from "dayjs";
 import { AuthContext } from "../Contex/Sose"
@@ -18,9 +17,10 @@ export default function HojeA(props) {
     const [lista, setlista] = useState([]);
     const [salvarclicked, setsalvarclicked] = useState(false);
     const [porcenta, setporcenta] = useState([]);
-    const [day, setDay] = useState(dayjs().locale('Pt-br').format('dddd, DD/MM'));
+    //retorna a primeira letra maiuscula
+    const capitalizeFirstLetter = (string) => { return string.charAt(0).toUpperCase() + string.slice(1); };
+    const [day, setDay] = useState(capitalizeFirstLetter(dayjs().locale('pt-br').format('dddd, DD/MM')));
     const [total, settotal] = useState();
-
 
 
     useEffect(() => {
@@ -104,43 +104,59 @@ export default function HojeA(props) {
                 <Data data-test="today">
                     {day}
                 </Data>
-                <Concluido>
+                <Concluido data-test="today-counter">
                     {concluidos === 0 && (<p>Nenhum hábito concluído ainda</p>)}
                     {concluidos !== 0 && (<h1> {concluidos}% doas hábitos concluidos</h1>)}
                 </Concluido>
             </Topo>
-           
-                <ListaHabitos>
-                    {lista.map(lista => (
 
-                        <Hab key={lista.id} >
-                            <Esquerdo>
-                                <Titulo>
-                                    {lista.name}
-                                </Titulo>
-                                <Sequencia>
+            <ListaHabitos>
+                {lista.map(lista => (
 
-                                    Sequência atual: {lista.currentSequence} dias<br></br>
-                                    Seu recorde: {lista.highestSequence} dias
-                                </Sequencia>
+                    <Hab key={lista.id} data-test="today-habit-container" >
+                        <Esquerdo>
+                            <Titulo  data-test="today-habit-name">
+                                {lista.name}
+                            </Titulo>
+                            <Sequencia>
 
-                            </Esquerdo>
-                            <Direito>
-                                <Quadrado onClick={() => { Marcar(lista.id) }}>
-                                    <IonIcon
-                                        style={{
-                                            backgroundColor: lista.done ? "#8FC549" : "#EBEBEB"
-                                        }}
-                                        icon={checkmarkOutline}
-                                        className="icon"
-                                    />
-                                </Quadrado>
-                            </Direito>
-                        </Hab>
-                    ))
-                    }
-                </ListaHabitos>
-          
+                                <p  data-test="today-habit-sequence">
+                                    Sequência atual: <span style={{ color: lista.done ? "#8FC549" : "#666666" }}>
+                                        {lista.currentSequence} dias</span>
+                                </p> <br></br>
+
+                                {(lista.highestSequence) > 0 && (
+                                    <p data-test="today-habit-record">
+                                        Seu recorde: <span style={{ color: (lista.currentSequence) === (lista.highestSequence) && lista.done ? "#8FC549" : "#666666" }}>
+                                            {lista.highestSequence} dias </span>
+                                    </p>
+                                )}
+                                {(lista.highestSequence) === 0 && (
+                                    <p data-test="today-habit-record">
+                                        Seu recorde: <span style={{ color: "#666666" }}>
+                                            {lista.highestSequence} dias </span>
+                                    </p>
+                                )}
+
+                            </Sequencia>
+
+                        </Esquerdo>
+                        <Direito>
+                            <Quadrado onClick={() => { Marcar(lista.id) }}  data-test="today-habit-check-btn">
+                                <IonIcon
+                                    style={{
+                                        backgroundColor: lista.done ? "#8FC549" : "#EBEBEB"
+                                    }}
+                                    icon={checkmarkOutline}
+                                    className="icon"
+                                />
+                            </Quadrado>
+                        </Direito>
+                    </Hab>
+                ))
+                }
+            </ListaHabitos>
+
 
             <Abaixo />
 
@@ -177,6 +193,7 @@ const Data = styled.div`
     line-height: 29px;
     color: #126BA5;
     margin-left: 10px;
+   
 
 `
 const Concluido = styled.div`

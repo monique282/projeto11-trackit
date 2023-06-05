@@ -10,9 +10,9 @@ export default function Acima() {
 
     return (
 
-        <Cabecalho>
+        <Cabecalho data-test="header">
             <Slogan>TrackIt </Slogan>
-            <Img src={image}/>
+            <Img src={image} data-test="avatar"/>
         </Cabecalho>
 
     )

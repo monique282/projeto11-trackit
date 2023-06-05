@@ -4,11 +4,12 @@ import styled from "styled-components"
 import MinhaImagem from '../../assets/Group 8.png';
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
-import {AuthContext} from "../Contex/Sose"
+import { AuthContext } from "../Contex/Sose";
+
 
 export default function Login() {
 
-    const { settoken, setimage} = useContext(AuthContext);
+    const { settoken, setimage } = useContext(AuthContext);
     const [email, setemail] = useState('');
     const [senha, setsenha] = useState('');
     const [loading, setLoading] = useState(false);
@@ -51,6 +52,7 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setemail(e.target.value)}
                     placeholder="email"
+                    data-test="email-input"
                 />
                 <Email
                     type="password"
@@ -59,18 +61,28 @@ export default function Login() {
                     value={senha}
                     onChange={(e) => setsenha(e.target.value)}
                     placeholder="senha"
+                    data-test="password-input"
                 />
-                <Entrar disabled={loading} >
+                <Entrar disabled={loading} data-test="login-btn">
 
                     {loading ? (
-                        <ThreeDots type="Oval" color="#FFFFFF" height={20} width={40} />
+
+                        <ThreeDots
+                            color="#FFFFFF"
+                            height={20}
+                            width={40}
+                            visible={true}
+                            style={{ flex: "1", width: "100%" }}
+                        />
+
                     ) : (
                         'Entrar'
                     )}
+
                 </Entrar>
             </Form>
             {/* preciso configurar o botão de cadastrar*/}
-            <Cadastrar to={'/cadastro'}>Não tem uma conta? Cadastre-se!</Cadastrar>
+            <Cadastrar to={'/cadastro'} data-test="signup-link" >Não tem uma conta? Cadastre-se!</Cadastrar>
         </Total>
     )
 }
@@ -105,6 +117,7 @@ const Email = styled.input`
     border-radius: 5px;
     padding-left: 11px;
     margin-top: 6px;
+    margin-bottom: 0px; 
     
     ::placeholder { 
     font-family: 'Lexend Deca';
@@ -116,9 +129,9 @@ const Email = styled.input`
   }
 `
 const Entrar = styled.button`
-    width: 319px;
+    width: 303px;
     height: 45px;
-    background-color: #52B6FF;
+    background-color: #52B6FF; 
     border-radius: 5px;
     display: flex;
     justify-content: center;
@@ -126,7 +139,7 @@ const Entrar = styled.button`
     font-family: 'Lexend Deca';
     font-style: normal;
     font-weight: 400;
-    font-size: 20.976px;
+    font-size: 21px;
     line-height: 26px;
     text-align: center;
     color: #FFFFFF;

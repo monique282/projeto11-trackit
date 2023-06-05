@@ -57,6 +57,7 @@ return (
                 value={email}
                 onChange={(e) => setemail(e.target.value)}
                 placeholder="email"
+                data-test="email-input"
             />
             <Email
                 type="password"
@@ -65,6 +66,7 @@ return (
                 value={senha}
                 onChange={(e) => setsenha(e.target.value)}
                 placeholder="senha"
+                data-test="password-input"
             />
             <Email
                 type="text"
@@ -73,6 +75,7 @@ return (
                 value={nome}
                 onChange={(e) => setnome(e.target.value)}
                 placeholder="nome"
+                data-test="user-name-input" 
             />
             <Email
                 type="text"
@@ -81,8 +84,9 @@ return (
                 value={foto}
                 onChange={(e) => setfoto(e.target.value)}
                 placeholder="foto"
+                data-test="user-image-input" 
             />
-            <Entrar disabled={loading} >
+            <Entrar disabled={loading} data-test="signup-btn" >
 
                 {loading ? (
                     <ThreeDots type="Oval" color="#FFFFFF" height={20} width={40} />
@@ -91,7 +95,7 @@ return (
                 )}
             </Entrar>
         </Form>
-        <Login to={'/'} >Já tem uma conta? Faça login!</Login>
+        <Login to={'/'} data-test="login-link" >Já tem uma conta? Faça login!</Login>
     </Total>
 )
 }
@@ -110,6 +114,7 @@ const Form = styled.form`
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    margin-bottom: 0px;
 `
 const Slogan = styled.img`
     width: 180px;
@@ -126,6 +131,7 @@ const Email = styled.input`
     border-radius: 5px;
     padding-left: 11px;
     margin-top: 6px;
+    margin-bottom: 0px;
     
     ::placeholder { 
     font-family: 'Lexend Deca';
@@ -137,7 +143,7 @@ const Email = styled.input`
   }
 `
 const Entrar = styled.button`
-    width: 319px;
+    width: 303px;
     height: 45px;
     background-color: #52B6FF;
     border-radius: 5px;
