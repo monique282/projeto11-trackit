@@ -1,13 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components"
 import MinhaImagem from '../../assets/Group 8.png';
 import axios from "axios";
 import { ThreeDots } from "react-loader-spinner";
+import {AuthContext} from "../Contex/Sose"
 
-export default function Login(props) {
+export default function Login() {
 
-    const { settoken } = props;
+    const { settoken, setimage} = useContext(AuthContext);
     const [email, setemail] = useState('');
     const [senha, setsenha] = useState('');
     const [loading, setLoading] = useState(false);
@@ -25,6 +26,7 @@ export default function Login(props) {
         setLoading(true);
 
         promise.then(resposta => {
+            setimage(resposta.data.image);
             settoken(resposta.data.token);
             navigate("/hoje");
         });

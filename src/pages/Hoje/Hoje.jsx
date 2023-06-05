@@ -1,18 +1,29 @@
 
 import styled from "styled-components";
-import MinhaImagem from '../../assets/14.png';
 import { IonIcon } from '@ionic/react';
 import { checkmarkOutline } from 'ionicons/icons';
-import Ho from '../../assets/Ellipse 2.png';
+import Acima from "../Acima/Acima";
+import Abaixo from "../Abaixo/Abaixo";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
+
+import { useContext, useEffect, useState } from "react";
+import dayjs from "dayjs";
+import { AuthContext } from "../Contex/Sose"
+import 'dayjs/locale/pt-br';
 
 
-export default function HojeA (props) {
+
+export default function HojeA(props) {
+    const { token, concluidos, setconcluidos } = useContext(AuthContext);
+    const [lista, setlista] = useState([]);
+    const [salvarclicked, setsalvarclicked] = useState(false);
+    const [porcenta, setporcenta] = useState([]);
+    const [day, setDay] = useState(dayjs().locale('Pt-br').format('dddd, DD/MM'));
+    const [total, settotal] = useState();
+
+
 
     useEffect(() => {
-        const { token } = props;
         const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/today'
         const conf = {
             headers: {
@@ -21,53 +32,118 @@ export default function HojeA (props) {
         }
         const promise = axios.get(URL, conf);
 
-        promise.then(resposta => console.log('deu certo'));
+        promise.then(resposta => {
+            console.log(resposta.data);
+            setlista(resposta.data)
+            setsalvarclicked(false);
+            const porcentaArray = resposta.data.map(item => item.done);
+            const trueCount = porcentaArray.filter(value => value === true).length;
+            const arredondado = Math.ceil((trueCount / resposta.data.length) * 100);
+            console.log(arredondado);
+            setconcluidos(arredondado);
+            settotal(resposta.data.length);
+
+        });
         promise.catch(resposta => alert('deu errado hoje'));
 
 
-    }, []);
+    }, [salvarclicked]);
 
+    console.log(porcenta)
+
+    function Marcar(id) {
+        console.log(id);
+        const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/check`
+        const conf = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        const promise = axios.post(URL, null, conf);
+
+        promise.then(resposta => {
+            console.log(resposta);
+            // Atualiza o estado do hábito concluído
+            setsalvarclicked(true);
+
+        });
+        promise.catch(resposta => {
+            Desmarcar(id);
+        });
+    }
+    // pegar o done do servidor
+    // se for false fique branco
+    // se for true fique verde 
+    /** */
+
+    function Desmarcar(id) {
+
+        const URL = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}/uncheck`;
+        const conf = {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        }
+        const promise = axios.post(URL, null, conf);
+
+        promise.then(resposta => {
+            console.log(resposta);
+            // Atualiza o estado do hábito concluído
+            setsalvarclicked(true);
+
+        });
+        promise.catch(resposta => alert('deu errado hoje desmarcar'));
+    };
 
 
 
     return (
         <Total>
-            <Cabecalho>
-                <Slogan>TrackIt </Slogan>
-                <Img src={MinhaImagem} />
-            </Cabecalho>
+            <Acima />
             <Topo>
-                <Data>
-                    Segunda-feira, 17/05
+                <Data data-test="today">
+                    {day}
                 </Data>
                 <Concluido>
-                    Nenhum hábito concluído ainda
+                    {concluidos === 0 && (<p>Nenhum hábito concluído ainda</p>)}
+                    {concluidos !== 0 && (<h1> {concluidos}% doas hábitos concluidos</h1>)}
                 </Concluido>
-                <ListaHabitos>
-                    <Hab>
-                        <Esquerdo>
-                            <Titulo>
-                                Ler 1 capítulo de livro
-                            </Titulo>
-                            <Sequencia>
-                                Sequência atual: 3 dias<br></br>
-                                Seu recorde: 5 dias
-                            </Sequencia>
-
-                        </Esquerdo>
-                        <Direito>
-                            <Quadrado>
-                                <IonIcon icon={checkmarkOutline} className="icon" />
-                            </Quadrado>
-                        </Direito>
-                    </Hab>
-                </ListaHabitos>
-                <Rodape>
-                    <Habi to={'/habitos'}> Habitos </Habi>
-                    <Hoje src={Ho} />
-                    <Habi to={'/habitosC'}> Histórico </Habi>
-                </Rodape>
             </Topo>
+           
+                <ListaHabitos>
+                    {lista.map(lista => (
+
+                        <Hab key={lista.id} >
+                            <Esquerdo>
+                                <Titulo>
+                                    {lista.name}
+                                </Titulo>
+                                <Sequencia>
+
+                                    Sequência atual: {lista.currentSequence} dias<br></br>
+                                    Seu recorde: {lista.highestSequence} dias
+                                </Sequencia>
+
+                            </Esquerdo>
+                            <Direito>
+                                <Quadrado onClick={() => { Marcar(lista.id) }}>
+                                    <IonIcon
+                                        style={{
+                                            backgroundColor: lista.done ? "#8FC549" : "#EBEBEB"
+                                        }}
+                                        icon={checkmarkOutline}
+                                        className="icon"
+                                    />
+                                </Quadrado>
+                            </Direito>
+                        </Hab>
+                    ))
+                    }
+                </ListaHabitos>
+          
+
+            <Abaixo />
+
 
         </Total>
     )
@@ -76,44 +152,11 @@ export default function HojeA (props) {
 const Total = styled.div`
 
     width: 100%;
-    height: 1000px;
     display: flex;
     align-items: center;
     flex-direction: column;
     background-color: #E5E5E5;
     
-`
-const Cabecalho = styled.div`
-    position: absolute;
-    width: 100%;
-    height: 70px;
-    left: 0px;
-    top: 0px;
-    background-color: #126BA5;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-`
-
-const Slogan = styled.div`
-    width: 200px;
-    height: 49px;
-    font-family: 'Playball';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 39px;
-    line-height: 49px;
-    color: #FFFFFF;
-    
-
-`
-
-const Img = styled.img`
-    width: 51px;
-    height: 51px;
-    border-radius: 98px;
-
 `
 const Topo = styled.div`
     width: 100%;
@@ -123,6 +166,7 @@ const Topo = styled.div`
     flex-direction: column;
     
 `
+
 const Data = styled.div`
     width: 100%;
     height: 29px;
@@ -132,6 +176,7 @@ const Data = styled.div`
     font-size: 23px;
     line-height: 29px;
     color: #126BA5;
+    margin-left: 10px;
 
 `
 const Concluido = styled.div`
@@ -142,21 +187,38 @@ const Concluido = styled.div`
     font-size: 17.976px;
     line-height: 22px;
     color: #BABABA;
+    margin-left: 10px;
+    h1{
+    width: 278px;
+    font-family: 'Lexend Deca';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 17.976px;
+    line-height: 22px;
+    color: #8FC549;  
+    }
 
 `
 const ListaHabitos = styled.div`
     width: 100%;
     height: 100%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 150px;
+    //background-color: #e51313;
+
    
 `
 const Hab = styled.div`
-    width: 100%;
+    width: 98%;
     height: 94px;
     background-color: #FFFFFF;
     border-radius: 5px;
     display: flex;
     justify-content: space-between;
-    margin-top: 28px;
+    margin-top: 10px;
+   
 `
 const Esquerdo = styled.div`
     width: 100%;
@@ -172,6 +234,8 @@ const Titulo = styled.div`
     line-height: 25px;
     color: #666666;
     margin-bottom: 7px;
+    margin-top: 10px;
+    margin-left: 20px;
 `
 const Sequencia = styled.div`
     width: 250px;
@@ -184,6 +248,7 @@ const Sequencia = styled.div`
     color: #666666;
     margin-bottom: 0px;
     margin-top: 0px;
+    margin-left: 20px;
    
 
 `
@@ -199,9 +264,9 @@ const Direito = styled.div`
 const Quadrado = styled.div`
     width: 69px;
     height: 69px;
-    
     border: 1px solid #e7e7e7;
     border-radius: 5px;
+    margin-right: 10px;
     .icon {
         width: 100%;
         height: 100%;
@@ -214,40 +279,5 @@ const Quadrado = styled.div`
     }
 
 `
-const Imagem = styled.img`
-    width: 100%;
-    height: 100%;
-    background-color: #FFFFFF;
-    
-`
-const Rodape = styled.div`
-    position: fixed;
-    width: 100%;
-    height: 70px;
-    left: 0px;
-    bottom: 0px;
-    background-color: #FFFFFF;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-`
-const Habi = styled(Link)`
-    width: 68px;
-    height: 22px;
-    font-family: 'Lexend Deca';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 22px;
-    text-align: center;
-    color: #52B6FF;
-    text-decoration: none;
-`
-const Hoje = styled.img`
-    width: 91px;
-    height: 91px;
-    background-color: #52B6FF;
-    border-radius: 98px;
-    margin-bottom : 10%;
 
-`
+

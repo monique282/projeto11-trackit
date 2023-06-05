@@ -1,21 +1,27 @@
 
 import { useState } from "react";
-import styled from "styled-components"
-import MinhaImagem from '../../assets/14.png';
-import Ho from '../../assets/Ellipse 2.png';
+import Acima from "../Acima/Acima";
+import Abaixo from "../Abaixo/Abaixo";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import styled, { css } from 'styled-components';
 import { useEffect } from "react";
 import { IonIcon } from '@ionic/react';
 import { trashOutline } from 'ionicons/icons';
+import { useContext } from "react";
+import { AuthContext } from "../Contex/Sose"
+import { ThreeDots } from "react-loader-spinner";
 
-export default function Habitos(props) {
+export default function Habitos() {
 
-    const { token } = props;
+    const { token } = useContext(AuthContext);
     const [clicado, setclicado] = useState('');
     const [habito, sethabito] = useState('');
     const [qual, setqual] = useState('');
     const [lista, setlista] = useState([]);
+    const [certeza, setcerteza] = useState('');
+    const [ids, setids] = useState();
+    const [loading, setLoading] = useState(false);
+    const [showRealmente, setShowRealmente] = useState(false);
     const [salvarclicked, setsalvarclicked] = useState(false);
     const [diasclicados, setdiasclicados] = useState({
         D: false,
@@ -27,13 +33,13 @@ export default function Habitos(props) {
         Sab: false,
     });
     const diasmap = {
-        D: 1,
-        Seg: 2,
-        T: 3,
-        Qa: 4,
-        Qi: 5,
-        Sex: 6,
-        Sab: 7,
+        D: 0,
+        Seg: 1,
+        T: 2,
+        Qa: 3,
+        Qi: 4,
+        Sex: 5,
+        Sab: 6,
     };
 
     // presiso chamar a lista antes de tudo
@@ -50,7 +56,7 @@ export default function Habitos(props) {
         promise.then(resposta => {
             if (resposta.data.length === 0) {
                 console.log('nada');
-                setqual('')
+                setqual('');
             } else {
                 // console.log(lista);
                 console.log(resposta.data);
@@ -73,7 +79,7 @@ export default function Habitos(props) {
         // promise.catch(resposta => alert('deu errado salvar'));
     }, [salvarclicked]);
 
-    
+
 
     function Criar(e) {
         e.preventDefault();
@@ -86,7 +92,7 @@ export default function Habitos(props) {
             days: diasnumeros
         };
         // criar abito
-        setclicado('');
+
         const URL = 'https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits'
         const confi = {
             headers: {
@@ -94,7 +100,7 @@ export default function Habitos(props) {
             }
         };
         const promise = axios.post(URL, dados, confi);
-        promise.then(resposta => console.log(resposta));
+        promise.then(resposta => { setsalvarclicked(true), setclicado(''); });
         promise.catch(resposta => alert('deu errado'));
     }
 
@@ -105,34 +111,31 @@ export default function Habitos(props) {
         }));
     };
 
-    function Deletar (id) {
-        
-        console.log(id);
-        const url = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${id}`;
+
+    function Tenho() {
+        console.log(ids);
+        const url = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${ids}`;
         const confi = {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         };
         const promise = axios.delete(url, confi);
-          promise.then(resposta => {
+        promise.then(resposta => {
             setsalvarclicked(true);
+            setcerteza(''),
 
-            console.log('Requisição DELETE enviada com sucesso!');
+                console.log('Requisição DELETE enviada com sucesso!');
             console.log('Status:', resposta.status);
-          })
-          promise.catch(error => {
+        })
+        promise.catch(error => {
             console.error('Ocorreu um erro ao enviar a requisição DELETE:', error);
-          });
-      };
+        });
+    };
 
     return (
-        <Total>
-            <Cabecalho>
-                <Slogan>TrackIt </Slogan>
-                <Img src={MinhaImagem} />
-            </Cabecalho>
-
+        <Total showOverlay={showRealmente}>
+            <Acima />
             <Topo>
                 <Meus> Meus hábitos </Meus>
                 <Mais onClick={() => { setclicado('ver'), setqual('') }}>+</Mais>
@@ -161,7 +164,8 @@ export default function Habitos(props) {
                                         backgroundColor: diasclicados["D"] ? "#CFCFCF" : "#FFFFFF",
                                         color: diasclicados["D"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
-                                    onClick={() => colorir("D")}> D</Dias>
+                                    onClick={() => colorir("D")}> D
+                                </Dias>
                                 <Dias
                                     style={{
                                         backgroundColor: diasclicados["Seg"] ? "#CFCFCF" : "#FFFFFF",
@@ -200,11 +204,16 @@ export default function Habitos(props) {
                                     onClick={() => colorir("Sab")}> S</Dias>
                             </Semana>
                             <Finalizar>
-                                <Cancelar>
+                                <Cancelar onClick={() => setsalvarclicked(true)}>
                                     Cancelar
                                 </Cancelar>
-                                <Salvar onClick={() => setsalvarclicked(true)}>
-                                    Salvar
+                                <Salvar disabled={loading} >
+                                    {loading ? (
+                                        <ThreeDots type="Oval" color="#FFFFFF" height={20} width={40} />
+                                    ) : (
+                                        ' Salvar'
+                                    )}
+
                                 </Salvar>
                             </Finalizar>
                         </Form>
@@ -217,18 +226,34 @@ export default function Habitos(props) {
             )}
 
             {qual === '1' && (
-                <>
+                <TodosHabitos>
+                    {certeza === '1' && (
+                        <Tudo>
+                            <Realmente>
+                                <p> Você realmente deseja apagar ?</p>
+                                <Botoes>
+                                    <Sim onClick={() => { Tenho(), setsalvarclicked(false) }}>Sim</Sim>
+                                    <Nao onClick={() => { setcerteza('') }}>Não</Nao>
+                                </Botoes>
+                            </Realmente>
+                        </Tudo>
+                    )}
+
+
                     {
                         lista.map(lista => (
                             <Preenche key={lista.id}>
                                 <Titulo>
                                     {lista.name}
-                                    {lista.days}
                                     <IonIcon
-                                    onClick={() => Deletar(lista.id)} 
-                                    icon={trashOutline} 
-                                    className="icon"
-                                     />
+                                        onClick={() => {
+                                            setcerteza('1'),
+                                            setsalvarclicked(true),
+                                            setids(lista.id);
+                                        }}
+                                        icon={trashOutline}
+                                        className="icon"
+                                    />
                                 </Titulo>
                                 <Semana>
                                     <Dias
@@ -277,15 +302,12 @@ export default function Habitos(props) {
 
                             </Preenche>))
                     }
-                </>
+                </TodosHabitos>
+
 
             )}
 
-            <Rodape>
-                <Hab to={'/habitos'}> Habitos </Hab>
-                <Hoje src={Ho} />
-                <Hab to={'/hoje'}> Histórico </Hab>
-            </Rodape>
+            <Abaixo />
         </Total>
     )
 }
@@ -299,10 +321,16 @@ const Total = styled.div`
     align-items: center;
     flex-direction: column;
     background-color: #E5E5E5;
+    position: relative; 
+    ${({ showOverlay }) =>
+        showOverlay &&
+        css`
+      background-color: rgba(229, 229, 229, 0.8); 
+    `}
     
 `
 const Titulo = styled.div`
-    width: 310px;
+    width: 340px;
     height: 25px;
     font-family: 'Lexend Deca';
     font-style: normal;
@@ -310,45 +338,26 @@ const Titulo = styled.div`
     font-size: 20px;
     line-height: 25px;
     color: #666666;
-    margin-top: 13px;
+    margin-bottom: 20px;
     padding-left: 17px;
     display: flex;
     justify-content: space-between;
-   // background-color: #e81818;
-    
-`
-const Cabecalho = styled.div`
-    position: absolute;
-    width: 100%;
-    height: 70px;
-    left: 0px;
-    top: 0px;
-    background-color: #126BA5;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.15);
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
+    //background-color: #e81818;
+    padding: 10px;
 
-`
-const Slogan = styled.div`
-    width: 200px;
-    height: 49px;
-    font-family: 'Playball';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 39px;
-    line-height: 49px;
-    color: #FFFFFF;
-
-`
-const Img = styled.img`
-    width: 51px;
-    height: 51px;
-    border-radius: 98px;
+    .icon {
+        width: 20px;
+        height: 25px;
+        color: #121010;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+    }
     
 `
 const Topo = styled.div`
-    width: 100%;
+    width: 98%;
     height: 70px;
     margin-top: 100px;
     display: flex;
@@ -392,40 +401,6 @@ const HabitosCadastrados = styled.div`
     color: #666666;
 
 `
-const Rodape = styled.div`
-    position: fixed;
-    width: 100%;
-    height: 70px;
-    left: 0px;
-    bottom: 0px;
-    background-color: #FFFFFF;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    margin-top: 1000px;
-
-`
-const Hab = styled(Link)`
-    width: 68px;
-    height: 22px;
-    font-family: 'Lexend Deca';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 18px;
-    line-height: 22px;
-    text-align: center;
-    color: #52B6FF;
-    text-decoration: none;
-
-`
-const Hoje = styled.img`
-    width: 91px;
-    height: 91px;
-    background-color: #52B6FF;
-    border-radius: 98px;
-    margin-bottom : 10%;
-
-`
 const Preencher = styled.div`
     width: 340px;
     height: 180px;
@@ -441,6 +416,12 @@ const Preenche = styled.div`
     background-color: #FFFFFF;
     border-radius: 5px;
     margin-bottom: 10px;
+    //background-color: #e95119;
+
+`
+const TodosHabitos = styled.div`
+    
+    margin-bottom: 150px;
     //background-color: #e95119;
 
 `
@@ -477,6 +458,7 @@ const Semana = styled.div`
     justify-content: flex-start;
     padding-left: 11px;
     margin-top: 8px;
+
 
 `
 const Dias = styled.div`
@@ -523,6 +505,21 @@ const Cancelar = styled.div`
     align-items: center;
 
 `
+const Tudo = styled.div`
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.6);
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left:0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+
+`
+
 const Salvar = styled.button`
     width: 84px;
     height: 35px;
@@ -541,4 +538,49 @@ const Salvar = styled.button`
     align-items: center;
     border: none;
 
+`
+const Realmente = styled.div`
+    width: 340px;
+    height: 180px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 999;
+    background-color: #126BA5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 5px;
+
+    p{
+        font-family: 'Lexend Deca';
+        font-style: normal;
+        font-weight: 400;
+        font-size: 20px;
+        line-height: 25px;
+    }
+
+`
+const Botoes = styled.div`
+   
+    display: felex;
+    margin-top: 25px;
+
+`
+
+const Sim = styled.button`
+    width: 84px;
+    height: 35px;
+    background-color:#5bee0c;
+  
+
+`
+const Nao = styled.button`
+    width: 84px;
+    height: 35px;
+    background-color:#e70a0a;
+    border: none;
+    margin-left: 25px;
 `
