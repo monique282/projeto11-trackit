@@ -205,7 +205,7 @@ export default function Habitos() {
                                     onClick={() => colorir("Sab")} data-test="habit-day" > S</Dias>
                             </Semana>
                             <Finalizar>
-                                <Cancelar onClick={() => setsalvarclicked(true)} data-test="habit-create-cancel-btn">
+                                <Cancelar onClick={() => {setsalvarclicked(true), setclicado('')}} data-test="habit-create-cancel-btn">
                                     Cancelar
                                 </Cancelar>
                                 <Salvar disabled={loading} data-test="habit-create-save-btn">
