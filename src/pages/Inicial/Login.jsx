@@ -13,6 +13,7 @@ export default function Login() {
     const [email, setemail] = useState('');
     const [senha, setsenha] = useState('');
     const [loading, setLoading] = useState(false);
+    const [disabledInputs, setDisabledInputs] = useState(false);
     const navigate = useNavigate();
 
 
@@ -35,6 +36,7 @@ export default function Login() {
 
         promise.catch(respota => {
             setLoading(false);
+            setDisabledInputs(false);
             alert('deu essado');
 
         });
@@ -52,6 +54,7 @@ export default function Login() {
                     value={email}
                     onChange={(e) => setemail(e.target.value)}
                     placeholder="email"
+                    disabled={disabledInputs}
                     data-test="email-input"
                 />
                 <Email
@@ -61,9 +64,10 @@ export default function Login() {
                     value={senha}
                     onChange={(e) => setsenha(e.target.value)}
                     placeholder="senha"
+                    disabled={disabledInputs}
                     data-test="password-input"
                 />
-                <Entrar disabled={loading} data-test="login-btn">
+                <Entrar disabled={loading || disabledInputs} data-test="login-btn">
 
                     {loading ? (
 
