@@ -105,8 +105,10 @@ export default function HojeA() {
                     {day}
                 </Data>
                 <Concluido data-test="today-counter">
+                     {total === 0  && (<p>Nenhum hábito concluído ainda</p>)}
                     {concluidos === 0 && (<p>Nenhum hábito concluído ainda</p>)}
-                    {concluidos !== 0 && (<h1> {concluidos}% doas hábitos concluidos</h1>)}
+                    {concluidos !== 0 && total !==0 && (<h1> {concluidos}% doas hábitos concluidos</h1>)}
+
                 </Concluido>
             </Topo>
 

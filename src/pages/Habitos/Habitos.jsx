@@ -82,7 +82,6 @@ export default function Habitos() {
 
 
     function Criar(e) {
-
         e.preventDefault();
 
         if (habito.trim() === '') {
@@ -121,6 +120,7 @@ export default function Habitos() {
 
     function Tenho() {
         console.log(ids);
+        const conf = window.confirm('Desejar deletar hábito?');
         const url = `https://mock-api.bootcamp.respondeai.com.br/api/v2/trackit/habits/${ids}`;
         const confi = {
             headers: {
@@ -244,19 +244,6 @@ export default function Habitos() {
 
             {qual === '1' && (
                 <TodosHabitos>
-                    {certeza === '1' && (
-                        <Tudo>
-                            <Realmente>
-                                <p> Você realmente deseja apagar ?</p>
-                                <Botoes>
-                                    <Sim onClick={() => { Tenho(), setsalvarclicked(false) }}>Sim</Sim>
-                                    <Nao onClick={() => { setcerteza('') }}>Não</Nao>
-                                </Botoes>
-                            </Realmente>
-                        </Tudo>
-                    )}
-
-
                     {
                         lista.map(lista => (
                             <Preenche key={lista.id} data-test="habit-container">
@@ -264,9 +251,10 @@ export default function Habitos() {
                                     {lista.name}
                                     <IonIcon
                                         onClick={() => {
+                                            Tenho();
                                             setcerteza('1'),
-                                                setsalvarclicked(true),
-                                                setids(lista.id);
+                                            setsalvarclicked(true),
+                                            setids(lista.id);
                                         }}
                                         icon={trashOutline}
                                         className="icon"
