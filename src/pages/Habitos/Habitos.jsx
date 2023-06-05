@@ -21,7 +21,7 @@ export default function Habitos() {
     const [certeza, setcerteza] = useState('');
     const [ids, setids] = useState();
     const [loading, setLoading] = useState(false);
-    const [showRealmente, setShowRealmente] = useState(false);
+    const [disabledInputs, setDisabledInputs] = useState(false);
     const [salvarclicked, setsalvarclicked] = useState(false);
     const [diasclicados, setdiasclicados] = useState({
         D: false,
@@ -82,13 +82,13 @@ export default function Habitos() {
 
 
     function Criar(e) {
-    
+
         e.preventDefault();
 
         if (habito.trim() === '') {
             alert('O campo não foi preenchido. Por favor, insira um nome para o hábito.');
             return;
-          }
+        }
 
         const diasselecionados = Object.keys(diasclicados).filter((dia) => diasclicados[dia]);
         const diasnumeros = diasselecionados.map((dia) => diasmap[dia]);
@@ -141,7 +141,7 @@ export default function Habitos() {
     };
 
     return (
-        <Total showOverlay={showRealmente}>
+        <Total >
             <Acima />
             <Topo>
                 <Meus> Meus hábitos </Meus>
@@ -163,6 +163,7 @@ export default function Habitos() {
                                 value={habito}
                                 onChange={(e) => sethabito(e.target.value)}
                                 placeholder="nome do Habito"
+                                disabled={disabledInputs}
                                 data-test="habit-name-input"
                             />
                             <Semana>
@@ -171,50 +172,59 @@ export default function Habitos() {
                                         backgroundColor: diasclicados["D"] ? "#CFCFCF" : "#FFFFFF",
                                         color: diasclicados["D"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
-                                    onClick={() => colorir("D")} data-test="habit-day" >  D
+                                    onClick={() => colorir("D")} data-test="habit-day"
+                                    disabled={disabledInputs} >  D
                                 </Dias>
                                 <Dias
                                     style={{
                                         backgroundColor: diasclicados["Seg"] ? "#CFCFCF" : "#FFFFFF",
                                         color: diasclicados["Seg"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
-                                    onClick={() => colorir("Seg")} data-test="habit-day" > S</Dias>
+                                    onClick={() => colorir("Seg")} data-test="habit-day"
+                                    disabled={disabledInputs}> S
+                                </Dias>
                                 <Dias
                                     style={{
                                         backgroundColor: diasclicados["T"] ? "#CFCFCF" : "#FFFFFF",
                                         color: diasclicados["T"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
-                                    onClick={() => colorir("T")} data-test="habit-day"> T</Dias>
+                                    onClick={() => colorir("T")} data-test="habit-day"
+                                    disabled={disabledInputs}> T
+                                </Dias>
                                 <Dias
                                     style={{
                                         backgroundColor: diasclicados["Qa"] ? "#CFCFCF" : "#FFFFFF",
                                         color: diasclicados["Qa"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
-                                    onClick={() => colorir("Qa")} data-test="habit-day">  Q</Dias>
+                                    onClick={() => colorir("Qa")} data-test="habit-day" disabled={disabledInputs}>  Q
+                                </Dias>
                                 <Dias
                                     style={{
                                         backgroundColor: diasclicados["Qi"] ? "#CFCFCF" : "#FFFFFF",
                                         color: diasclicados["Qi"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
-                                    onClick={() => colorir("Qi")} data-test="habit-day" > Q</Dias>
+                                    onClick={() => colorir("Qi")} data-test="habit-day" disabled={disabledInputs}> Q
+                                </Dias>
                                 <Dias
                                     style={{
                                         backgroundColor: diasclicados["Sex"] ? "#CFCFCF" : "#FFFFFF",
                                         color: diasclicados["Sex"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
-                                    onClick={() => colorir("Sex")} data-test="habit-day" > S</Dias>
+                                    onClick={() => colorir("Sex")} data-test="habit-day" disabled={disabledInputs}> S
+                                </Dias>
                                 <Dias
                                     style={{
                                         backgroundColor: diasclicados["Sab"] ? "#CFCFCF" : "#FFFFFF",
                                         color: diasclicados["Sab"] ? "#FFFFFF" : "#DBDBDB",
                                     }}
-                                    onClick={() => colorir("Sab")} data-test="habit-day" > S</Dias>
+                                    onClick={() => colorir("Sab")} data-test="habit-day" disabled={disabledInputs}> S
+                                </Dias>
                             </Semana>
                             <Finalizar>
-                                <Cancelar onClick={() => {setsalvarclicked(true), setclicado('')}} data-test="habit-create-cancel-btn">
+                                <Cancelar onClick={() => { setsalvarclicked(true), setclicado('') }} data-test="habit-create-cancel-btn">
                                     Cancelar
                                 </Cancelar>
-                                <Salvar disabled={loading} data-test="habit-create-save-btn">
+                                <Salvar disabled={loading || disabledInputs} data-test="habit-create-save-btn">
                                     {loading ? (
                                         <ThreeDots type="Oval" color="#FFFFFF" height={20} width={40} />
                                     ) : (
@@ -264,43 +274,43 @@ export default function Habitos() {
                                     />
                                 </Titulo>
                                 <Semana>
-                                    <Dias data-test="habit-day" 
+                                    <Dias data-test="habit-day"
                                         style={{
                                             backgroundColor: lista.days.includes(diasmap["D"]) ? "#CFCFCF" : "#FFFFFF",
                                             color: lista.days.includes(diasmap["D"]) ? "#FFFFFF" : "#DBDBDB",
                                         }}
                                     > D</Dias>
-                                    <Dias data-test="habit-day" 
+                                    <Dias data-test="habit-day"
                                         style={{
                                             backgroundColor: lista.days.includes(diasmap["Seg"]) ? "#CFCFCF" : "#FFFFFF",
                                             color: lista.days.includes(diasmap["Seg"]) ? "#FFFFFF" : "#DBDBDB",
                                         }}
                                     > S</Dias>
-                                    <Dias data-test="habit-day" 
+                                    <Dias data-test="habit-day"
                                         style={{
                                             backgroundColor: lista.days.includes(diasmap["T"]) ? "#CFCFCF" : "#FFFFFF",
                                             color: lista.days.includes(diasmap["T"]) ? "#FFFFFF" : "#DBDBDB",
                                         }}
                                     > T</Dias>
-                                    <Dias data-test="habit-day" 
+                                    <Dias data-test="habit-day"
                                         style={{
                                             backgroundColor: lista.days.includes(diasmap["Qa"]) ? "#CFCFCF" : "#FFFFFF",
                                             color: lista.days.includes(diasmap["Qa"]) ? "#FFFFFF" : "#DBDBDB",
                                         }}
                                     > Q</Dias>
-                                    <Dias data-test="habit-day" 
+                                    <Dias data-test="habit-day"
                                         style={{
                                             backgroundColor: lista.days.includes(diasmap["Qi"]) ? "#CFCFCF" : "#FFFFFF",
                                             color: lista.days.includes(diasmap["Qi"]) ? "#FFFFFF" : "#DBDBDB",
                                         }}
                                     > Q</Dias>
-                                    <Dias data-test="habit-day" 
+                                    <Dias data-test="habit-day"
                                         style={{
                                             backgroundColor: lista.days.includes(diasmap["Sex"]) ? "#CFCFCF" : "#FFFFFF",
                                             color: lista.days.includes(diasmap["Sex"]) ? "#FFFFFF" : "#DBDBDB",
                                         }}
                                     > S</Dias>
-                                    <Dias data-test="habit-day" 
+                                    <Dias data-test="habit-day"
                                         style={{
                                             backgroundColor: lista.days.includes(diasmap["Sab"]) ? "#CFCFCF" : "#FFFFFF",
                                             color: lista.days.includes(diasmap["Sab"]) ? "#FFFFFF" : "#DBDBDB",
